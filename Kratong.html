@@ -1,0 +1,2212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>ลอยกระทงอธิษฐาน 🌕🏮</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --font-calligraphy: 'Prompt', 'Noto Sans Thai', sans-serif;
+      --font-cute: 'Prompt', 'Noto Sans Thai', sans-serif;
+      --font-body: 'Prompt', 'Noto Sans Thai', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #0b1c29;
+      color: #ffffff;
+      font-family: var(--font-body);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .font-calligraphy { font-family: var(--font-calligraphy); }
+    .font-cute { font-family: var(--font-cute); }
+
+    /* Glassmorphic Dark Panel */
+    .glass-panel {
+      background: rgba(13, 24, 38, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(230, 184, 106, 0.28);
+      box-shadow: 0 12px 40px rgba(4, 10, 18, 0.65), inset 0 1px 0 rgba(255, 240, 200, 0.12);
+    }
+
+    /* Candle Flame Animation for SVG Previews */
+    .svg-candle-flame {
+      transform-origin: center bottom;
+      animation: flameFlicker 0.85s ease-in-out infinite alternate;
+    }
+
+    @keyframes flameFlicker {
+      0% { transform: scaleY(1) scaleX(1) rotate(-2deg); filter: drop-shadow(0 0 6px #ffbe3d); }
+      50% { transform: scaleY(1.12) scaleX(0.92) rotate(2.5deg); filter: drop-shadow(0 0 10px #ffd166); }
+      100% { transform: scaleY(0.94) scaleX(1.05) rotate(-1deg); filter: drop-shadow(0 0 7px #ff9f1c); }
+    }
+
+    /* Notification Pulse Dot */
+    .notify-dot {
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.9);
+      animation: pulseGlow 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.95; }
+      50% { transform: scale(1.35); opacity: 0.55; }
+    }
+
+    /* ================= Bug-Free Interactive 3D Envelope & Parchment Letter ================= */
+    .envelope-perspective {
+      perspective: 1100px;
+    }
+
+    .envelope-container {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Sealed Envelope Box */
+    .envelope-body {
+      position: relative;
+      width: 100%;
+      height: 215px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #f7e4c6 0%, #ebd0a7 100%);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55), inset 0 0 0 1.5px rgba(212, 163, 94, 0.5);
+      cursor: pointer;
+      transition: opacity 0.4s ease, transform 0.45s ease;
+    }
+
+    /* Front Pocket Flaps (Left, Right, Bottom visual folds) */
+    .envelope-pocket {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .envelope-pocket::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(32deg, #edd3ab 49.5%, transparent 50.5%),
+        linear-gradient(328deg, #e5c699 49.5%, transparent 50.5%);
+      opacity: 0.95;
+    }
+
+    .envelope-pocket::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62%;
+      background: linear-gradient(180deg, #f3dec0 0%, #e4c291 100%);
+      clip-path: polygon(0 100%, 50% 18%, 100% 100%);
+      border-top: 1px solid rgba(180, 125, 65, 0.25);
+    }
+
+    /* Top Flap with smooth 3D rotation */
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 58%;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 0.65s cubic-bezier(0.34, 1.4, 0.64, 1), z-index 0.2s;
+      z-index: 6;
+      pointer-events: auto;
+    }
+
+    .envelope-flap-shape {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #f9ebd2 0%, #e7c79a 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      box-shadow: 0 4px 12px rgba(90, 50, 20, 0.2);
+    }
+
+    /* Wax Heart Seal */
+    .wax-seal {
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 30%, #e15a64 0%, #b82937 65%, #841824 100%);
+      box-shadow: 0 5px 14px rgba(130, 20, 35, 0.5), inset 0 2px 4px rgba(255, 200, 205, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 8;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    /* Open State for Envelope */
+    .envelope-container.is-open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .envelope-container.is-open .wax-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.4);
+      pointer-events: none;
+    }
+
+    .envelope-container.is-open .envelope-body {
+      opacity: 0;
+      transform: translateY(36px) scale(0.92);
+      pointer-events: none;
+    }
+
+    /* Parchment Letter Card (Slides in gracefully when opened) */
+    .parchment-letter {
+      position: relative;
+      width: 100%;
+      background: linear-gradient(180deg, #fffcf4 0%, #fdf3df 55%, #f9e8c8 100%);
+      border: 2px solid #e6c68e;
+      border-radius: 22px;
+      color: #462b1c;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 0 25px rgba(220, 175, 105, 0.2);
+      transform: translateY(25px) scale(0.94);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, opacity 0.45s ease 0.15s;
+    }
+
+    .envelope-container.is-open .parchment-letter {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Custom Scrollbar */
+    .gold-scroll::-webkit-scrollbar { width: 4px; }
+    .gold-scroll::-webkit-scrollbar-thumb {
+      background: rgba(196, 143, 66, 0.45);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="relative w-full h-[100dvh] overflow-hidden">
+
+  <!-- Fullscreen Interactive HTML5 Canvas -->
+  <canvas id="scene-canvas" class="fixed inset-0 w-full h-full block z-0 cursor-pointer"></canvas>
+
+  <!--Top Header Overlay  -->
+  <header class="fixed top-0 inset-x-0 z-20 pointer-events-none px-3.5 pt-3 sm:px-6 sm:pt-4">
+    <div class="relative max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2">
+      <!-- Top-Right Action Icons -->
+      <div class="pointer-events-auto self-end sm:self-auto sm:absolute sm:right-0 sm:top-0.5 flex items-center gap-1.5 sm:gap-2 shrink-0 pt-0.5">
+        <!-- Letter Button with Glowing Dot -->
+        <button id="open-letter-btn" type="button" aria-label="เปิดจดหมายน้อย"
+          class="relative h-9 sm:h-10 px-3 sm:px-3.5 rounded-full glass-panel flex items-center gap-1.5 text-xs font-cute font-semibold text-amber-100 hover:bg-white/10 active:scale-95 transition">
+          <span class="text-sm sm:text-base">💌</span>
+          <span id="letter-notify-dot" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-300 notify-dot"></span>
+        </button>
+
+        <!-- Sound Toggle Button -->
+        <button id="sound-toggle-btn" type="button" aria-label="เปิดหรือปิดเสียง"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-full glass-panel flex items-center justify-center text-sm sm:text-base hover:bg-white/10 active:scale-90 transition"
+          title="เสียงขิมและสายน้ำ">
+          <span id="sound-icon">🔊</span>
+        </button>
+
+        <!-- Customize & Share Button -->
+        <button id="open-customize-btn" type="button" aria-label="แก้ไขข้อความและแชร์"
+          class="w-9 h-9 sm:w-10 sm:h-10 rounded-full glass-panel flex items-center justify-center text-sm sm:text-base hover:bg-white/10 active:scale-90 transition"
+          title="แก้ไขข้อความและแชร์ลิงก์">
+          <span>✏️</span>
+        </button>
+      </div>
+
+      <!-- Centered Title & Poetic Subtitle -->
+      <div class="pointer-events-none select-none text-center">
+        <h1 class="font-calligraphy text-2xl sm:text-4xl font-bold text-[#f7dca0] tracking-wide drop-shadow-[0_2px_12px_rgba(255,205,110,0.45)] leading-tight">
+          ลอยกระทงอธิษฐาน
+        </h1>
+        <p class="font-cute text-[11px] sm:text-sm text-[#efe0d2]/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)] mt-0.5">
+          ลอยความทุกข์ไปกับสายน้ำ ให้ความสุขลอยเข้ามา
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Subtle Interactive Hint Pill  -->
+  <div id="sky-hint-pill" class="fixed top-[108px] sm:top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none transition-opacity duration-700">
+    <span class="inline-block px-3 py-1 rounded-full bg-black/25 backdrop-blur-sm border border-amber-200/15 text-[10px] sm:text-xs font-cute text-amber-100/80 whitespace-nowrap">
+      ✨ แตะดาวขอพรดาวตก • แตะท้องฟ้าปล่อยโคม • แตะผิวน้ำสร้างคลื่น
+    </span>
+  </div>
+
+  <!-- ===================== 3. Bottom Glassmorphic Interactive Sheet ===================== -->
+  <section id="bottom-sheet-wrapper" class="fixed bottom-0 inset-x-0 z-30 p-3 sm:p-4 flex flex-col items-center pointer-events-none">
+
+    <!-- Collapsed Toggle Pill -->
+    <button id="expand-sheet-btn" type="button"
+      class="hidden pointer-events-auto items-center gap-2 px-5 py-2.5 rounded-full glass-panel text-amber-100 font-cute text-xs sm:text-sm font-semibold hover:bg-white/10 active:scale-95 transition">
+      <span>🪷</span>
+      <span>สร้างกระทงอธิษฐาน</span>
+      <span class="text-amber-300 text-xs">▲</span>
+    </button>
+
+    <!-- Main Interactive Glass Sheet -->
+    <div id="glass-sheet" class="pointer-events-auto w-full max-w-[430px] rounded-3xl glass-panel p-3.5 sm:p-4 text-white transition-all duration-300">
+
+      <!-- Sheet Header: Step Dots + Collapse Toggle -->
+      <div class="flex items-center justify-between mb-2.5">
+        <div class="flex items-center gap-1.5">
+          <span id="step-dot-1" class="h-1.5 w-6 rounded-full bg-amber-300 transition-all"></span>
+          <span id="step-dot-2" class="h-1.5 w-2 rounded-full bg-white/25 transition-all"></span>
+          <span id="step-dot-3" class="h-1.5 w-2 rounded-full bg-white/25 transition-all"></span>
+          <span id="step-title-badge" class="ml-1.5 text-[11px] font-cute text-amber-200/95 font-medium">
+            1/3 เลือกกระทงคู่ใจ
+          </span>
+        </div>
+
+        <button id="collapse-sheet-btn" type="button"
+          class="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[11px] font-cute text-amber-100/90 active:scale-95 transition">
+          ชมวิวเต็มตา ▾
+        </button>
+      </div>
+
+      <!--  STRICTLY 2x2 Grid (Top 2 + Bottom 2) -->
+      <div id="step-1-panel" class="space-y-3">
+        <div id="krathong-grid-2x2" class="grid grid-cols-2 gap-2.5">
+         
+        </div>
+
+        <button id="to-step-2-btn" type="button"
+          class="w-full py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-[#f6d37f] via-[#e9b355] to-[#d98a3b] text-[#281506] font-cute font-bold text-sm shadow-lg shadow-amber-500/20 active:scale-[0.98] transition">
+          ถัดไป: เขียนคำอธิษฐาน ✨
+        </button>
+      </div>
+
+      <!--  Wish Input & Heartfelt Presets -->
+      <div id="step-2-panel" class="hidden space-y-2.5">
+        <div class="text-center">
+          <p class="font-cute text-xs text-amber-100/90">ส่งคำอธิษฐานดีๆ ไปพร้อมกับสายน้ำคืนเพ็ญ 🌕</p>
+        </div>
+
+        <input id="wish-input" type="text" maxlength="65"
+          placeholder="พิมพ์คำอธิษฐานของเธอตรงนี้เลย..."
+          class="w-full px-3.5 py-2.5 rounded-2xl bg-white/10 border border-amber-200/30 text-xs sm:text-sm text-white placeholder-slate-300/60 font-cute focus:outline-none focus:ring-2 focus:ring-amber-300/70" />
+
+        <!--  Heartfelt Preset Chips -->
+        <div class="flex flex-wrap gap-1.5 justify-center">
+          <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-amber-300/15 hover:bg-amber-300/25 border border-amber-200/25 text-[11px] font-cute text-amber-100 active:scale-95 transition">ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨</button>
+          <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-pink-300/15 hover:bg-pink-300/25 border border-pink-200/25 text-[11px] font-cute text-pink-100 active:scale-95 transition">ขอให้สมหวังในสิ่งที่ตั้งใจนะ 💫</button>
+          <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-rose-300/15 hover:bg-rose-300/25 border border-rose-200/25 text-[11px] font-cute text-rose-100 active:scale-95 transition">ขอให้ได้อยู่ข้าง กันไปนานๆ 💖</button>
+          <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-emerald-300/15 hover:bg-emerald-300/25 border border-emerald-200/25 text-[11px] font-cute text-emerald-100 active:scale-95 transition">ลอยความเหนื่อยล้า เหลือไว้แต่ความสุข 🪷</button>
+        </div>
+
+        <div class="flex gap-2 pt-0.5">
+          <button id="back-step-1-btn" type="button"
+            class="w-1/3 py-2.5 rounded-2xl bg-white/10 border border-white/15 font-cute text-xs sm:text-sm text-slate-200 active:scale-95 transition">
+            ← เลือกใหม่
+          </button>
+          <button id="to-step-3-btn" type="button"
+            class="w-2/3 py-2.5 rounded-2xl bg-gradient-to-r from-[#f6d37f] via-[#e9b355] to-[#d98a3b] text-[#281506] font-cute font-bold text-xs sm:text-sm shadow-lg shadow-amber-500/20 active:scale-[0.98] transition">
+            ถัดไป: จุดเทียนอธิษฐาน 🕯️
+          </button>
+        </div>
+      </div>
+
+      <!--  Interactive Candle Lighting & Release -->
+      <div id="step-3-panel" class="hidden space-y-2.5 text-center">
+        <p id="candle-step-subtitle" class="font-cute text-xs text-amber-200/95">
+          แตะที่เทียนบนกระทงเพื่อจุดไฟอธิษฐานนะ 🕯️
+        </p>
+
+        <div class="relative flex flex-col items-center justify-center py-1">
+          <div id="candle-aura" class="hidden absolute w-32 h-32 rounded-full bg-amber-300/25 blur-2xl pointer-events-none"></div>
+          <button id="tap-candle-btn" type="button" aria-label="แตะเพื่อจุดเทียน"
+            class="relative w-32 h-28 flex items-center justify-center cursor-pointer active:scale-95 transition focus:outline-none">
+            <!-- Detailed SVG Krathong injected here -->
+          </button>
+          <p id="step3-wish-quote" class="mt-0.5 px-3 py-1 rounded-full bg-white/10 border border-amber-200/20 text-[11px] font-cute text-amber-100 max-w-full truncate">
+            "ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨"
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button id="back-step-2-btn" type="button"
+            class="w-1/3 py-2.5 rounded-2xl bg-white/10 border border-white/15 font-cute text-xs sm:text-sm text-slate-200 active:scale-95 transition">
+            ← แก้ไขพร
+          </button>
+          <button id="launch-krathong-btn" type="button"
+            class="w-2/3 py-2.5 rounded-2xl bg-gradient-to-r from-amber-300 to-orange-400 text-[#281506] font-cute font-bold text-xs sm:text-sm shadow-lg shadow-amber-500/25 active:scale-[0.98] transition">
+            จุดเทียนอธิษฐาน 🕯️
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bug-Free Romantic Envelope & Letter Modal (z-100)  -->
+  <div id="letter-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div class="relative w-full max-w-[380px] envelope-perspective">
+
+      <!-- Explicit Close Button (Always clickable on top) -->
+      <button id="close-letter-modal-btn" type="button" aria-label="ปิดหน้าต่างจดหมาย"
+        class="absolute -top-3 -right-1 sm:-right-3 z-30 w-9 h-9 rounded-full bg-[#fdf3df] text-[#5c341d] border border-amber-300 shadow-lg flex items-center justify-center font-bold text-sm hover:bg-amber-100 active:scale-90 transition">
+        ✕
+      </button>
+
+      <!-- Envelope Stage -->
+      <div id="envelope-container" class="envelope-container">
+
+        <!-- Sealed Envelope Visual (Click anywhere to open) -->
+        <div id="envelope-sealed-trigger" class="envelope-body" role="button" tabindex="0" aria-label="แตะเพื่อเปิดซองจดหมาย">
+          <!-- Top 3D Flap -->
+          <div class="envelope-flap">
+            <div class="envelope-flap-shape"></div>
+          </div>
+
+          <!-- Pocket Folds -->
+          <div class="envelope-pocket"></div>
+
+          <!-- Wax Heart Seal -->
+          <div class="wax-seal">
+            <span class="text-xl drop-shadow">💖</span>
+          </div>
+
+          <!-- Envelope Label -->
+          <div class="absolute bottom-4 inset-x-0 text-center z-10 pointer-events-none">
+            <p class="font-calligraphy text-lg font-bold text-[#6e3f23]">ถึง... <span id="envelope-preview-to">คนพิเศษ</span></p>
+            <p class="font-cute text-[11px] text-[#9b6642] mt-0.5 animate-pulse">แตะที่ซองเพื่อเปิดอ่านนะ 💌</p>
+          </div>
+        </div>
+
+        <!-- Parchment Letter (Revealed smoothly inside the exact same container) -->
+        <div class="parchment-letter p-5 sm:p-6 -mt-[215px]">
+          <div class="text-center space-y-3">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 border border-amber-300 text-2xl shadow-inner">
+              🪷
+            </div>
+
+            <div>
+              <p class="font-cute text-[11px] text-amber-700 font-semibold tracking-wider">สุขสันต์วันลอยกระทง</p>
+              <h2 class="font-calligraphy text-2xl sm:text-3xl font-bold text-[#7c3415] mt-0.5">
+                ถึง <span id="letter-to-display">คนพิเศษ</span> ✨
+              </h2>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white/75 border border-amber-200/90 shadow-inner text-left text-xs sm:text-sm font-cute leading-relaxed text-[#4f311f] max-h-[38dvh] overflow-y-auto gold-scroll">
+              <p id="letter-msg-display" class="whitespace-pre-line">
+                คืนนี้พระจันทร์สวยจัง... เลยอยากชวนมาลอยกระทงด้วยกัน แม้จะอยู่คนละที่ แต่อยากให้รู้ว่ามีคนตรงนี้คอยเป็นกำลังใจและคิดถึงเสมอนะ ขอให้ทุกคำอธิษฐานของเธอเป็นจริง ✨
+              </p>
+            </div>
+
+            <p class="font-calligraphy text-lg sm:text-xl font-bold text-[#9c4c24] pt-0.5">
+              จาก <span id="letter-from-display">คนที่แอบยิ้มเวลาคุยกับเธอ</span>
+            </p>
+
+            <button id="keep-in-heart-btn" type="button"
+              class="w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#e59866] via-[#d96b78] to-[#c9536c] text-white font-cute font-bold text-xs sm:text-sm shadow-md shadow-rose-400/30 active:scale-95 transition">
+              เก็บไว้ในใจ 💖
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--  Customize & Share Modal -->
+  <div id="customize-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+    <div class="relative w-full max-w-[390px] rounded-3xl glass-panel text-white p-5 max-h-[90dvh] overflow-y-auto gold-scroll">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-cute text-base sm:text-lg font-bold text-amber-200">✏️ แก้ไขข้อความ &amp; ส่งให้คนพิเศษ</h3>
+        <button id="close-customize-btn" type="button"
+          class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-200 active:scale-90 transition">
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-3 text-sm">
+        <div>
+          <label class="block font-cute text-xs text-amber-200/90 mb-1">ชื่อคนพิเศษ (ถึง)</label>
+          <input id="custom-to-input" type="text" maxlength="36"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-amber-200/25 text-white font-cute text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-300" />
+        </div>
+
+        <div>
+          <label class="block font-cute text-xs text-amber-200/90 mb-1">ชื่อผู้ส่ง (จาก)</label>
+          <input id="custom-from-input" type="text" maxlength="36"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-amber-200/25 text-white font-cute text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-300" />
+        </div>
+
+        <div>
+          <label class="block font-cute text-xs text-amber-200/90 mb-1">ข้อความในจดหมาย</label>
+          <textarea id="custom-msg-input" rows="4" maxlength="300"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-amber-200/25 text-white font-cute text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-300 resize-none"></textarea>
+        </div>
+
+        <button id="save-and-copy-btn" type="button"
+          class="w-full py-3 rounded-2xl bg-gradient-to-r from-[#f6d37f] via-[#e9b355] to-[#d98a3b] text-[#281506] font-cute font-bold text-xs sm:text-sm shadow-lg active:scale-95 transition">
+          บันทึกและคัดลอกลิงก์ 🔗
+        </button>
+
+        <p class="text-[11px] text-amber-100/70 text-center font-cute leading-relaxed">
+          ลิงก์จะแนบข้อความของคุณไว้ใน URL ส่งให้เธอเปิดอ่านบนมือถือได้ทันที
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box (No alert()) -->
+  <div id="toast-box" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-[120] opacity-0 -translate-y-2 transition-all duration-300">
+    <div id="toast-text" class="px-4 py-2 rounded-full bg-[#132236]/95 text-amber-100 text-xs font-cute font-semibold shadow-xl border border-amber-200/35 whitespace-nowrap">
+      คัดลอกลิงก์สำเร็จ! ส่งให้คนพิเศษได้เลย 💌
+    </div>
+  </div>
+
+  <script>
+   
+    (function () {
+      'use strict';
+
+      // Configuration & Default State ----------------
+      const DEFAULT_LETTER = {
+        to: 'คนพิเศษ',
+        from: 'คนที่แอบยิ้มเวลาคุยกับเธอ',
+        msg: 'คืนนี้พระจันทร์สวยจัง... เลยอยากชวนมาลอยกระทงด้วยกัน แม้จะอยู่คนละที่ แต่อยากให้รู้ว่ามีคนตรงนี้คอยเป็นกำลังใจและคิดถึงเสมอนะ ขอให้ทุกคำอธิษฐานของเธอเป็นจริง ✨'
+      };
+
+      const KRATHONG_TYPES = [
+        { id: 'pink_lotus', name: 'บัวหลวงชมพู', sub: 'ละมุนคลาสสิก' },
+        { id: 'white_lotus', name: 'บัวขาวบริสุทธิ์', sub: 'สงบงามดั่งแสงจันทร์' },
+        { id: 'marigold', name: 'ดาวเรืองทองคำ', sub: 'รุ่งเรืองสว่างไสว' },
+        { id: 'sweet_rose', name: 'กุหลาบหวานละมุน', sub: 'โรแมนติกสุดหัวใจ' }
+      ];
+
+      const MAX_RIPPLES = 12;
+      const MAX_PARTICLES = 24;
+
+      const state = {
+        step: 1,
+        selectedKrathong: 'pink_lotus',
+        wish: 'ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨',
+        candleLit: false,
+        soundEnabled: true,
+        sheetCollapsed: false,
+        letter: { ...DEFAULT_LETTER },
+        melodyIndex: 0
+      };
+
+      // Web Audio API: Tap-Only Thai Khim & Water Chimes
+      let audioCtx = null;
+      let masterGain = null;
+      let delayNode = null;
+
+      // Songkran / Thai Pentatonic melody  (C5, D5, E5, G5, A5, C6, D6, E6)
+      const SONGKRAN_MELODY = [
+        523.25, 659.25, 783.99, 880.00, 783.99, 659.25,
+        587.33, 659.25, 783.99, 659.25, 587.33, 523.25,
+        659.25, 783.99, 880.00, 1046.50, 880.00, 783.99
+      ];
+
+      function initAudio() {
+        try {
+          if (!audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return null;
+            audioCtx = new Ctx();
+
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.75;
+
+            // Warm soft hall echo for Thai Khim resonance
+            delayNode = audioCtx.createDelay(0.6);
+            delayNode.delayTime.value = 0.22;
+            const feedback = audioCtx.createGain();
+            feedback.gain.value = 0.28;
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 2600;
+
+            delayNode.connect(filter);
+            filter.connect(feedback);
+            feedback.connect(delayNode);
+            delayNode.connect(masterGain);
+
+            masterGain.connect(audioCtx.destination);
+          }
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          return audioCtx;
+        } catch (err) {
+          return null;
+        }
+      }
+
+      // Synthesize a single authentic plucked/struck Thai Khim note
+      function playKhimNote(freq, delaySec = 0, duration = 0.85, vol = 0.11) {
+        if (!state.soundEnabled) return;
+        const ctx = initAudio();
+        if (!ctx || !masterGain) return;
+
+        try {
+          const t = ctx.currentTime + delaySec;
+
+          // Fundamental warm tone
+          const osc1 = ctx.createOscillator();
+          osc1.type = 'triangle';
+          osc1.frequency.setValueAtTime(freq, t);
+
+          // Metallic string shimmer (2nd harmonic)
+          const osc2 = ctx.createOscillator();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(freq * 2, t);
+
+          // Soft octave shimmer
+          const osc3 = ctx.createOscillator();
+          osc3.type = 'sine';
+          osc3.frequency.setValueAtTime(freq * 3, t);
+
+          const gain1 = ctx.createGain();
+          const gain2 = ctx.createGain();
+          const gain3 = ctx.createGain();
+
+          gain1.gain.setValueAtTime(0.0001, t);
+          gain1.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+          gain1.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+
+          gain2.gain.setValueAtTime(0.0001, t);
+          gain2.gain.exponentialRampToValueAtTime(vol * 0.42, t + 0.005);
+          gain2.gain.exponentialRampToValueAtTime(0.0001, t + duration * 0.55);
+
+          gain3.gain.setValueAtTime(0.0001, t);
+          gain3.gain.exponentialRampToValueAtTime(vol * 0.14, t + 0.004);
+          gain3.gain.exponentialRampToValueAtTime(0.0001, t + duration * 0.3);
+
+          osc1.connect(gain1);
+          osc2.connect(gain2);
+          osc3.connect(gain3);
+
+          gain1.connect(masterGain);
+          gain2.connect(masterGain);
+          gain3.connect(masterGain);
+
+          // Send gentle tail to echo
+          if (delayNode) {
+            gain1.connect(delayNode);
+          }
+
+          osc1.start(t);
+          osc2.start(t);
+          osc3.start(t);
+          osc1.stop(t + duration + 0.05);
+          osc2.stop(t + duration + 0.05);
+          osc3.stop(t + duration + 0.05);
+        } catch (err) { /* ignore safely */ }
+      }
+
+      // Soft realistic water droplet sound + Songkran pentatonic chime
+      function playWaterTapSound() {
+        if (!state.soundEnabled) return;
+        const ctx = initAudio();
+        if (ctx && masterGain) {
+          try {
+            const t = ctx.currentTime;
+            const dropOsc = ctx.createOscillator();
+            const dropGain = ctx.createGain();
+            dropOsc.type = 'sine';
+            dropOsc.frequency.setValueAtTime(420, t);
+            dropOsc.frequency.exponentialRampToValueAtTime(860, t + 0.065);
+
+            dropGain.gain.setValueAtTime(0.0001, t);
+            dropGain.gain.exponentialRampToValueAtTime(0.065, t + 0.01);
+            dropGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+
+            dropOsc.connect(dropGain);
+            dropGain.connect(masterGain);
+            dropOsc.start(t);
+            dropOsc.stop(t + 0.1);
+          } catch (err) { /* ignore */ }
+        }
+
+        const note = SONGKRAN_MELODY[state.melodyIndex % SONGKRAN_MELODY.length];
+        state.melodyIndex++;
+        playKhimNote(note, 0.015, 0.78, 0.085);
+      }
+
+      function playStarTapSound() {
+        // Delicate sparkling ascending chime
+        [783.99, 880.00, 1046.50, 1318.51].forEach((f, idx) => {
+          playKhimNote(f, idx * 0.055, 0.75, 0.075);
+        });
+      }
+
+      function playLanternSound() {
+        playKhimNote(659.25, 0, 0.75, 0.08);
+        playKhimNote(880.00, 0.09, 0.85, 0.085);
+      }
+
+      function playCandleSound() {
+        [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
+          playKhimNote(f, idx * 0.06, 0.9, 0.09);
+        });
+      }
+
+      function playReleaseSound() {
+        // Graceful 5-note Thai Songkran-style khim phrase
+        [523.25, 659.25, 783.99, 880.00, 1046.50].forEach((f, idx) => {
+          playKhimNote(f, idx * 0.085, 1.05, 0.1);
+        });
+      }
+
+      function playEnvelopeSound() {
+        playKhimNote(659.25, 0, 0.8, 0.085);
+        playKhimNote(1046.50, 0.11, 1.0, 0.09);
+      }
+
+      // ---------------- 3. Canvas & Offscreen Sprite Architecture ----------------
+      const canvas = document.getElementById('scene-canvas');
+      const ctx = canvas.getContext('2d', { alpha: false });
+
+      let viewW = 0;
+      let viewH = 0;
+      let dpr = 1;
+      let horizonY = 0;
+      let moonPos = { x: 0, y: 0, r: 26 };
+
+      // Offscreen cached canvases
+      const bgCanvas = document.createElement('canvas');
+      const bgCtx = bgCanvas.getContext('2d');
+
+      const reflCanvas = document.createElement('canvas');
+      const reflCtx = reflCanvas.getContext('2d');
+
+      const sprites = {
+        glowGold: null,
+        glowPink: null,
+        glowMoon: null,
+        lantern: null,
+        sparkleGold: null,
+        sparklePink: null,
+        heart: null,
+        krathongs: {}
+      };
+
+      // Dynamic scene collections
+      const stars = [];
+      const shootingStars = [];
+      const lanterns = [];
+      const fireflies = [];
+      const ripples = [];     // strictly capped <= MAX_RIPPLES
+      const particles = [];   // strictly capped <= MAX_PARTICLES
+      const floatingKrathongs = [];
+      let prathipLampsX = []; // horizon lamp positions for water reflection ticks
+
+      // Pre-render radial glow sprite
+      function createGlowSprite(size, innerColor, midColor, outerColor) {
+        const c = document.createElement('canvas');
+        c.width = size;
+        c.height = size;
+        const gctx = c.getContext('2d');
+        const half = size / 2;
+        const grad = gctx.createRadialGradient(half, half, 0, half, half, half);
+        grad.addColorStop(0, innerColor);
+        grad.addColorStop(0.35, midColor);
+        grad.addColorStop(1, outerColor);
+        gctx.fillStyle = grad;
+        gctx.fillRect(0, 0, size, size);
+        return c;
+      }
+
+      // Pre-render Khom Loy (sky lantern) sprite
+      function createLanternSprite() {
+        const c = document.createElement('canvas');
+        c.width = 96;
+        c.height = 96;
+        const lctx = c.getContext('2d');
+        const cx = 48;
+        const cy = 48;
+
+        // Soft circular golden halo
+        const halo = lctx.createRadialGradient(cx, cy, 4, cx, cy, 44);
+        halo.addColorStop(0, 'rgba(255, 214, 120, 0.58)');
+        halo.addColorStop(0.42, 'rgba(255, 165, 70, 0.22)');
+        halo.addColorStop(1, 'rgba(255, 140, 50, 0)');
+        lctx.fillStyle = halo;
+        lctx.fillRect(0, 0, 96, 96);
+
+        // Trapezoidal glowing paper body
+        const bodyGrad = lctx.createLinearGradient(cx, cy - 15, cx, cy + 12);
+        bodyGrad.addColorStop(0, '#e87834');
+        bodyGrad.addColorStop(0.55, '#ffb155');
+        bodyGrad.addColorStop(1, '#fff0b3');
+
+        lctx.beginPath();
+        lctx.moveTo(cx - 7, cy - 14);
+        lctx.lineTo(cx + 7, cy - 14);
+        lctx.lineTo(cx + 9.5, cy + 11);
+        lctx.lineTo(cx - 9.5, cy + 11);
+        lctx.closePath();
+        lctx.fillStyle = bodyGrad;
+        lctx.fill();
+
+        // Subtle rim & inner flame core
+        lctx.beginPath();
+        lctx.ellipse(cx, cy + 10.5, 6, 1.8, 0, 0, Math.PI * 2);
+        lctx.fillStyle = '#fff9de';
+        lctx.fill();
+
+        return c;
+      }
+
+      // Pre-render Sparkle & Heart Sprites
+      function createSparkleSprite(colorHex) {
+        const c = document.createElement('canvas');
+        c.width = 32;
+        c.height = 32;
+        const sctx = c.getContext('2d');
+        sctx.translate(16, 16);
+
+        const glow = sctx.createRadialGradient(0, 0, 0, 0, 0, 14);
+        glow.addColorStop(0, '#ffffff');
+        glow.addColorStop(0.35, colorHex);
+        glow.addColorStop(1, 'rgba(255,255,255,0)');
+        sctx.fillStyle = glow;
+        sctx.beginPath();
+        sctx.arc(0, 0, 14, 0, Math.PI * 2);
+        sctx.fill();
+
+        // 4-point star glint
+        sctx.fillStyle = '#ffffff';
+        sctx.beginPath();
+        for (let i = 0; i < 4; i++) {
+          sctx.rotate(Math.PI / 2);
+          sctx.moveTo(0, -10);
+          sctx.quadraticCurveTo(1.5, -1.5, 10, 0);
+          sctx.quadraticCurveTo(1.5, 1.5, 0, 10);
+        }
+        sctx.fill();
+        return c;
+      }
+
+      function createHeartSprite() {
+        const c = document.createElement('canvas');
+        c.width = 32;
+        c.height = 32;
+        const hctx = c.getContext('2d');
+        hctx.translate(16, 17);
+        hctx.shadowColor = 'rgba(255, 130, 170, 0.85)';
+        hctx.shadowBlur = 6;
+        hctx.fillStyle = '#ff9ebd';
+        hctx.beginPath();
+        hctx.moveTo(0, 6);
+        hctx.bezierCurveTo(-9, -1, -11, -9, -5, -10.5);
+        hctx.bezierCurveTo(-1.5, -11.3, 0, -7.5, 0, -6.5);
+        hctx.bezierCurveTo(0, -7.5, 1.5, -11.3, 5, -10.5);
+        hctx.bezierCurveTo(11, -9, 9, -1, 0, 6);
+        hctx.fill();
+        return c;
+      }
+
+      // Pre-render Realistic Krathong Body (without flame, flame is drawn live for authentic flicker)
+      function createKrathongSprite(type) {
+        const c = document.createElement('canvas');
+        c.width = 160;
+        c.height = 130;
+        const kctx = c.getContext('2d');
+        const cx = 80;
+        const baseY = 98;
+
+        // Soft ambient shadow under krathong on water
+        const shad = kctx.createRadialGradient(cx, baseY + 6, 8, cx, baseY + 6, 56);
+        shad.addColorStop(0, 'rgba(4, 10, 18, 0.55)');
+        shad.addColorStop(1, 'rgba(4, 10, 18, 0)');
+        kctx.fillStyle = shad;
+        kctx.beginPath();
+        kctx.ellipse(cx, baseY + 6, 56, 15, 0, 0, Math.PI * 2);
+        kctx.fill();
+
+        // Banana leaf base (layered realistic emerald green)
+        const baseGrad = kctx.createLinearGradient(cx - 48, baseY - 8, cx + 48, baseY + 10);
+        baseGrad.addColorStop(0, '#2e6f40');
+        baseGrad.addColorStop(0.5, '#4da362');
+        baseGrad.addColorStop(1, '#265c34');
+        kctx.fillStyle = baseGrad;
+        kctx.beginPath();
+        kctx.ellipse(cx, baseY, 46, 12, 0, 0, Math.PI * 2);
+        kctx.fill();
+        kctx.strokeStyle = '#1b4728';
+        kctx.lineWidth = 1.5;
+        kctx.stroke();
+
+        // Folded green leaf points around rim
+        kctx.fillStyle = '#3f8c54';
+        for (let i = -3; i <= 3; i++) {
+          const px = cx + i * 12;
+          kctx.beginPath();
+          kctx.moveTo(px - 6, baseY + 1);
+          kctx.lineTo(px, baseY - 12);
+          kctx.lineTo(px + 6, baseY + 1);
+          kctx.closePath();
+          kctx.fill();
+        }
+
+        // Helper for realistic lotus / flower petals
+        function drawPetal(px, py, w, h, angle, cTop, cBot, strokeCol) {
+          kctx.save();
+          kctx.translate(px, py);
+          kctx.rotate(angle);
+          const pg = kctx.createLinearGradient(0, -h, 0, 0);
+          pg.addColorStop(0, cTop);
+          pg.addColorStop(1, cBot);
+          kctx.fillStyle = pg;
+          kctx.beginPath();
+          kctx.moveTo(0, 0);
+          kctx.quadraticCurveTo(-w, -h * 0.55, 0, -h);
+          kctx.quadraticCurveTo(w, -h * 0.55, 0, 0);
+          kctx.fill();
+          if (strokeCol) {
+            kctx.strokeStyle = strokeCol;
+            kctx.lineWidth = 0.9;
+            kctx.stroke();
+          }
+          kctx.restore();
+        }
+
+        // Draw style-specific petals
+        if (type === 'pink_lotus') {
+          // Back outer petals
+          [-0.95, -0.58, -0.25, 0.25, 0.58, 0.95].forEach((a) => {
+            drawPetal(cx + a * 26, baseY - 2, 11, 34, a * 0.45, '#fff0f6', '#f472b6', '#db2777');
+          });
+          // Incense & candle behind front petals
+          drawCenterCandleAndIncense(kctx, cx, baseY - 10);
+          // Front inner petals
+          [-0.65, -0.3, 0, 0.3, 0.65].forEach((a) => {
+            drawPetal(cx + a * 24, baseY + 4, 10, 26, a * 0.35, '#ffffff', '#fbcfe8', '#f472b6');
+          });
+        } else if (type === 'white_lotus') {
+          [-0.95, -0.58, -0.25, 0.25, 0.58, 0.95].forEach((a) => {
+            drawPetal(cx + a * 26, baseY - 2, 11, 34, a * 0.45, '#ffffff', '#e8e4d8', '#cbd5e1');
+          });
+          drawCenterCandleAndIncense(kctx, cx, baseY - 10);
+          [-0.65, -0.3, 0, 0.3, 0.65].forEach((a) => {
+            drawPetal(cx + a * 24, baseY + 4, 10, 26, a * 0.35, '#fffef9', '#f1ebd8', '#d6cfc0');
+          });
+        } else if (type === 'marigold') {
+          // Festive golden marigold ring + white jasmine crown
+          for (let i = -3; i <= 3; i++) {
+            const mx = cx + i * 11;
+            const my = baseY - 5 + Math.abs(i) * 1.2;
+            const mg = kctx.createRadialGradient(mx - 2, my - 2, 1, mx, my, 10);
+            mg.addColorStop(0, '#ffe066');
+            mg.addColorStop(0.65, '#f59e0b');
+            mg.addColorStop(1, '#b45309');
+            kctx.fillStyle = mg;
+            kctx.beginPath();
+            kctx.arc(mx, my, 9.5, 0, Math.PI * 2);
+            kctx.fill();
+          }
+          drawCenterCandleAndIncense(kctx, cx, baseY - 10);
+          // Front marigold & jasmine pearls
+          for (let i = -2; i <= 2; i++) {
+            const mx = cx + i * 11;
+            const my = baseY + 3;
+            kctx.fillStyle = i % 2 === 0 ? '#fbbf24' : '#fffdf5';
+            kctx.beginPath();
+            kctx.arc(mx, my, 7.5, 0, Math.PI * 2);
+            kctx.fill();
+          }
+        } else {
+          // 'sweet_rose' romantic pastel rose petals
+          [-0.9, -0.52, -0.2, 0.2, 0.52, 0.9].forEach((a) => {
+            drawPetal(cx + a * 25, baseY - 2, 12, 31, a * 0.48, '#ffe4ec', '#fb7185', '#e11d48');
+          });
+          drawCenterCandleAndIncense(kctx, cx, baseY - 10);
+          [-0.6, -0.25, 0, 0.25, 0.6].forEach((a) => {
+            drawPetal(cx + a * 22, baseY + 4, 11, 23, a * 0.32, '#fff5f7', '#fda4af', '#f43f5e');
+          });
+        }
+
+        return c;
+      }
+
+      function drawCenterCandleAndIncense(kctx, cx, topY) {
+        // Incense sticks
+        kctx.strokeStyle = '#e5be75';
+        kctx.lineWidth = 1.8;
+        kctx.lineCap = 'round';
+        [[-5, -24], [0, -27], [5, -24]].forEach(([dx, dy]) => {
+          kctx.beginPath();
+          kctx.moveTo(cx + dx * 0.5, topY + 6);
+          kctx.lineTo(cx + dx, topY + dy);
+          kctx.stroke();
+
+          // Glowing incense ember
+          kctx.fillStyle = '#ff6b4a';
+          kctx.beginPath();
+          kctx.arc(cx + dx, topY + dy, 1.8, 0, Math.PI * 2);
+          kctx.fill();
+        });
+
+        // Beeswax candle body
+        const cg = kctx.createLinearGradient(cx - 4, topY - 26, cx + 4, topY + 4);
+        cg.addColorStop(0, '#fff7cc');
+        cg.addColorStop(1, '#eab308');
+        kctx.fillStyle = cg;
+        kctx.beginPath();
+        kctx.roundRect(cx - 3.5, topY - 25, 7, 29, 2);
+        kctx.fill();
+      }
+
+      function initSprites() {
+        sprites.glowGold = createGlowSprite(128, 'rgba(255, 230, 145, 0.55)', 'rgba(255, 190, 95, 0.2)', 'rgba(255, 170, 70, 0)');
+        sprites.glowPink = createGlowSprite(128, 'rgba(255, 195, 220, 0.45)', 'rgba(255, 150, 190, 0.16)', 'rgba(255, 130, 170, 0)');
+        sprites.glowMoon = createGlowSprite(256, 'rgba(255, 245, 200, 0.35)', 'rgba(255, 225, 150, 0.1)', 'rgba(255, 210, 130, 0)');
+        sprites.lantern = createLanternSprite();
+        sprites.sparkleGold = createSparkleSprite('rgba(255, 225, 130, 0.9)');
+        sprites.sparklePink = createSparkleSprite('rgba(255, 175, 210, 0.9)');
+        sprites.heart = createHeartSprite();
+
+        KRATHONG_TYPES.forEach((k) => {
+          sprites.krathongs[k.id] = createKrathongSprite(k.id);
+        });
+      }
+
+      // ---------------- 4. Pre-render Twilight Temple Riverside Scene ----------------
+      function buildBackgroundScene() {
+        bgCanvas.width = Math.max(1, Math.floor(viewW * dpr));
+        bgCanvas.height = Math.max(1, Math.floor(viewH * dpr));
+        bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        horizonY = Math.round(viewH * 0.62);
+
+        // Twilight Sky Gradient (#111328 -> #392745 -> #7d4a3a)
+        const skyGrad = bgCtx.createLinearGradient(0, 0, 0, horizonY);
+        skyGrad.addColorStop(0, '#111328');
+        skyGrad.addColorStop(0.42, '#281e3a');
+        skyGrad.addColorStop(0.72, '#4b3048');
+        skyGrad.addColorStop(0.92, '#7d4a3a');
+        skyGrad.addColorStop(1, '#9e5d42');
+        bgCtx.fillStyle = skyGrad;
+        bgCtx.fillRect(0, 0, viewW, horizonY + 2);
+
+        // 2) Full Moon (Top-Left) with atmospheric halo & soft lunar shading
+        const moonX = viewW * 0.18;
+        const moonY = horizonY * 0.24;
+        const moonR = Math.max(20, Math.min(viewW * 0.068, 36));
+        moonPos = { x: moonX, y: moonY, r: moonR };
+
+        // Wide warm atmospheric halo
+        const mHalo = bgCtx.createRadialGradient(moonX, moonY, moonR * 0.8, moonX, moonY, moonR * 5.2);
+        mHalo.addColorStop(0, 'rgba(255, 245, 209, 0.35)');
+        mHalo.addColorStop(0.35, 'rgba(255, 224, 155, 0.12)');
+        mHalo.addColorStop(1, 'rgba(255, 210, 140, 0)');
+        bgCtx.fillStyle = mHalo;
+        bgCtx.beginPath();
+        bgCtx.arc(moonX, moonY, moonR * 5.2, 0, Math.PI * 2);
+        bgCtx.fill();
+
+        // Moon disc
+        const moonGrad = bgCtx.createRadialGradient(
+          moonX - moonR * 0.25, moonY - moonR * 0.25, moonR * 0.1,
+          moonX, moonY, moonR
+        );
+        moonGrad.addColorStop(0, '#fffdf2');
+        moonGrad.addColorStop(0.7, '#fff5d1');
+        moonGrad.addColorStop(1, '#ebd08a');
+        bgCtx.fillStyle = moonGrad;
+        bgCtx.beginPath();
+        bgCtx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
+        bgCtx.fill();
+
+        // Subtle lunar craters / shading
+        bgCtx.save();
+        bgCtx.beginPath();
+        bgCtx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
+        bgCtx.clip();
+        bgCtx.fillStyle = 'rgba(218, 185, 112, 0.22)';
+        bgCtx.beginPath();
+        bgCtx.arc(moonX + moonR * 0.35, moonY - moonR * 0.15, moonR * 0.28, 0, Math.PI * 2);
+        bgCtx.arc(moonX - moonR * 0.22, moonY + moonR * 0.32, moonR * 0.22, 0, Math.PI * 2);
+        bgCtx.arc(moonX + moonR * 0.12, moonY + moonR * 0.42, moonR * 0.14, 0, Math.PI * 2);
+        bgCtx.fill();
+        bgCtx.restore();
+
+        // 3) Deep Prussian-Indigo River Base (#18374b -> #0b1c29)
+        const riverGrad = bgCtx.createLinearGradient(0, horizonY, 0, viewH);
+        riverGrad.addColorStop(0, '#18374b');
+        riverGrad.addColorStop(0.45, '#102738');
+        riverGrad.addColorStop(1, '#0b1c29');
+        bgCtx.fillStyle = riverGrad;
+        bgCtx.fillRect(0, horizonY, viewW, viewH - horizonY);
+
+        // Subtle warm horizon glow bounced onto top edge of water
+        const waterHorizonGlow = bgCtx.createLinearGradient(0, horizonY, 0, horizonY + (viewH - horizonY) * 0.28);
+        waterHorizonGlow.addColorStop(0, 'rgba(180, 108, 72, 0.28)');
+        waterHorizonGlow.addColorStop(1, 'rgba(24, 55, 75, 0)');
+        bgCtx.fillStyle = waterHorizonGlow;
+        bgCtx.fillRect(0, horizonY, viewW, (viewH - horizonY) * 0.28);
+
+        //Temple (Ubosot), Golden Chedi, Trees & Riverside Walkway (Drawn cleanly onto both bgCanvas and reflCanvas)
+        const archW = viewW;
+        const archH = Math.min(horizonY * 0.72, 260);
+
+        // Helper to draw architecture at baseline y = targetY
+        function drawTempleArchitecture(tCtx, baseY) {
+          const scale = Math.min(Math.max(viewW / 440, 0.88), 1.75);
+          const centerX = viewW * 0.5;
+
+          // Edge silhouetted trees/bushes
+          tCtx.fillStyle = '#090a12';
+          tCtx.beginPath();
+          tCtx.arc(viewW * 0.02, baseY - 6 * scale, 34 * scale, 0, Math.PI * 2);
+          tCtx.arc(viewW * 0.09, baseY - 2 * scale, 20 * scale, 0, Math.PI * 2);
+          tCtx.arc(viewW * 0.98, baseY - 8 * scale, 36 * scale, 0, Math.PI * 2);
+          tCtx.arc(viewW * 0.91, baseY - 2 * scale, 21 * scale, 0, Math.PI * 2);
+          tCtx.fill();
+
+          // Flanking lush bushes around temple & chedi
+          tCtx.fillStyle = '#0c0d16';
+          tCtx.beginPath();
+          tCtx.arc(centerX - 88 * scale, baseY - 4 * scale, 22 * scale, 0, Math.PI * 2);
+          tCtx.arc(centerX - 106 * scale, baseY - 1 * scale, 15 * scale, 0, Math.PI * 2);
+          tCtx.arc(centerX + 12 * scale, baseY - 3 * scale, 18 * scale, 0, Math.PI * 2);
+          tCtx.arc(centerX + 96 * scale, baseY - 2 * scale, 17 * scale, 0, Math.PI * 2);
+          tCtx.fill();
+
+          // ---- Center-Left Thai Ubosot ----
+          const uX = centerX - 36 * scale;
+          const uW = 92 * scale;
+          const uH = 38 * scale;
+
+          // Base plinth
+          tCtx.fillStyle = '#2d1914';
+          tCtx.fillRect(uX - uW * 0.56, baseY - 10 * scale, uW * 1.12, 10 * scale);
+
+          // Cream wall with warm shading
+          const wallGrad = tCtx.createLinearGradient(uX - uW * 0.5, 0, uX + uW * 0.5, 0);
+          wallGrad.addColorStop(0, '#bd9068');
+          wallGrad.addColorStop(0.4, '#ecd2ac');
+          wallGrad.addColorStop(0.75, '#e2be90');
+          wallGrad.addColorStop(1, '#aa7e58');
+          tCtx.fillStyle = wallGrad;
+          tCtx.fillRect(uX - uW * 0.5, baseY - 10 * scale - uH, uW, uH);
+
+          // 5 Glowing Amber Windows
+          const winCount = 5;
+          const winW = 7.5 * scale;
+          const winH = 20 * scale;
+          const winTop = baseY - 10 * scale - uH * 0.78;
+          for (let i = 0; i < winCount; i++) {
+            const wx = uX - uW * 0.38 + i * (uW * 0.19) - winW / 2;
+
+            // Soft window ambient light
+            const wg = tCtx.createRadialGradient(wx + winW / 2, winTop + winH / 2, 2, wx + winW / 2, winTop + winH / 2, 18 * scale);
+            wg.addColorStop(0, 'rgba(255, 224, 130, 0.35)');
+            wg.addColorStop(1, 'rgba(255, 200, 100, 0)');
+            tCtx.fillStyle = wg;
+            tCtx.fillRect(wx - 12 * scale, winTop - 8 * scale, winW + 24 * scale, winH + 16 * scale);
+
+            // Arched/rectangular glowing window pane
+            const wPaneGrad = tCtx.createLinearGradient(0, winTop, 0, winTop + winH);
+            wPaneGrad.addColorStop(0, '#fff9df');
+            wPaneGrad.addColorStop(1, '#ffd06b');
+            tCtx.fillStyle = wPaneGrad;
+            tCtx.beginPath();
+            tCtx.roundRect(wx, winTop, winW, winH, [3 * scale, 3 * scale, 1, 1]);
+            tCtx.fill();
+          }
+
+          // Curved Two-Tiered Roofs (Dark Terracotta-Maroon + Gold Trim #e6b86a)
+          const roofBaseY = baseY - 10 * scale - uH;
+          const roofGrad = tCtx.createLinearGradient(0, roofBaseY - 48 * scale, 0, roofBaseY + 6 * scale);
+          roofGrad.addColorStop(0, '#8a3023');
+          roofGrad.addColorStop(1, '#4b1610');
+
+          // Lower tier roof
+          tCtx.fillStyle = roofGrad;
+          tCtx.strokeStyle = '#e6b86a';
+          tCtx.lineWidth = 1.4 * scale;
+          tCtx.beginPath();
+          tCtx.moveTo(uX - uW * 0.72, roofBaseY + 2 * scale);
+          tCtx.quadraticCurveTo(uX - uW * 0.35, roofBaseY - 4 * scale, uX, roofBaseY - 26 * scale);
+          tCtx.quadraticCurveTo(uX + uW * 0.35, roofBaseY - 4 * scale, uX + uW * 0.72, roofBaseY + 2 * scale);
+          tCtx.quadraticCurveTo(uX, roofBaseY + 7 * scale, uX - uW * 0.72, roofBaseY + 2 * scale);
+          tCtx.closePath();
+          tCtx.fill();
+          tCtx.stroke();
+
+          // Upper tier roof
+          tCtx.beginPath();
+          tCtx.moveTo(uX - uW * 0.48, roofBaseY - 16 * scale);
+          tCtx.quadraticCurveTo(uX - uW * 0.2, roofBaseY - 22 * scale, uX, roofBaseY - 48 * scale);
+          tCtx.quadraticCurveTo(uX + uW * 0.2, roofBaseY - 22 * scale, uX + uW * 0.48, roofBaseY - 16 * scale);
+          tCtx.quadraticCurveTo(uX, roofBaseY - 12 * scale, uX - uW * 0.48, roofBaseY - 16 * scale);
+          tCtx.closePath();
+          tCtx.fill();
+          tCtx.stroke();
+
+          // Golden Chofah spire
+          tCtx.fillStyle = '#f2c977';
+          tCtx.beginPath();
+          tCtx.moveTo(uX - 1.5 * scale, roofBaseY - 47 * scale);
+          tCtx.lineTo(uX + 4.5 * scale, roofBaseY - 60 * scale);
+          tCtx.lineTo(uX + 1.5 * scale, roofBaseY - 46 * scale);
+          tCtx.closePath();
+          tCtx.fill();
+
+          // ---- Center-Right Tall Golden Chedi ----
+          const cX = centerX + 58 * scale;
+          const chediGrad = tCtx.createLinearGradient(cX - 32 * scale, baseY - 140 * scale, cX + 32 * scale, baseY);
+          chediGrad.addColorStop(0, '#f5d484');
+          chediGrad.addColorStop(0.45, '#c99a49');
+          chediGrad.addColorStop(1, '#6e4e26');
+
+          // Stepped pedestal
+          tCtx.fillStyle = chediGrad;
+          tCtx.fillRect(cX - 30 * scale, baseY - 11 * scale, 60 * scale, 11 * scale);
+          tCtx.fillRect(cX - 22 * scale, baseY - 22 * scale, 44 * scale, 11 * scale);
+
+          // Bell-shaped body & tall tapering spire
+          tCtx.beginPath();
+          tCtx.moveTo(cX - 18 * scale, baseY - 22 * scale);
+          tCtx.bezierCurveTo(
+            cX - 18 * scale, baseY - 44 * scale,
+            cX - 11 * scale, baseY - 64 * scale,
+            cX - 5 * scale, baseY - 80 * scale
+          );
+          tCtx.lineTo(cX - 1.5 * scale, baseY - 134 * scale);
+          tCtx.lineTo(cX, baseY - 148 * scale);
+          tCtx.lineTo(cX + 1.5 * scale, baseY - 134 * scale);
+          tCtx.lineTo(cX + 5 * scale, baseY - 80 * scale);
+          tCtx.bezierCurveTo(
+            cX + 11 * scale, baseY - 64 * scale,
+            cX + 18 * scale, baseY - 44 * scale,
+            cX + 18 * scale, baseY - 22 * scale
+          );
+          tCtx.closePath();
+          tCtx.fill();
+
+          // Warm golden rim light on left side of chedi
+          tCtx.strokeStyle = 'rgba(255, 238, 175, 0.55)';
+          tCtx.lineWidth = 1.1 * scale;
+          tCtx.beginPath();
+          tCtx.moveTo(cX - 17 * scale, baseY - 23 * scale);
+          tCtx.bezierCurveTo(
+            cX - 16.5 * scale, baseY - 44 * scale,
+            cX - 10 * scale, baseY - 64 * scale,
+            cX - 4.5 * scale, baseY - 80 * scale
+          );
+          tCtx.lineTo(cX - 0.8 * scale, baseY - 138 * scale);
+          tCtx.stroke();
+
+          // Fine horizontal spire rings (ปล้องไฉน)
+          tCtx.strokeStyle = 'rgba(110, 78, 38, 0.55)';
+          tCtx.lineWidth = 0.9 * scale;
+          for (let r = 0; r < 8; r++) {
+            const ry = baseY - 86 * scale - r * 4.5 * scale;
+            const rw = (4.2 - r * 0.35) * scale;
+            tCtx.beginPath();
+            tCtx.moveTo(cX - rw, ry);
+            tCtx.lineTo(cX + rw, ry);
+            tCtx.stroke();
+          }
+        }
+
+        // Draw Temple onto main background canvas
+        drawTempleArchitecture(bgCtx, horizonY);
+
+        // Dark waterfront walkway bank
+        bgCtx.fillStyle = '#080910';
+        bgCtx.fillRect(0, horizonY - 3, viewW, 5);
+
+        // Pre-render flipped reflection canvas for dynamic water scanlines
+        reflCanvas.width = Math.max(1, Math.floor(viewW * dpr));
+        reflCanvas.height = Math.max(1, Math.floor(archH * dpr));
+        reflCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        reflCtx.clearRect(0, 0, viewW, archH);
+        reflCtx.save();
+        reflCtx.translate(0, 0);
+        reflCtx.scale(1, -1);
+        drawTempleArchitecture(reflCtx, 0);
+        reflCtx.restore();
+
+        // Evenly Spaced Prathip Oil Lamps along the entire horizon
+        prathipLampsX = [];
+        const lampStep = Math.max(28, Math.min(viewW / 14, 44));
+        for (let lx = lampStep * 0.5; lx < viewW - 8; lx += lampStep) {
+          prathipLampsX.push(lx);
+
+          // Soft circular radial glow
+          bgCtx.drawImage(sprites.glowGold, lx - 16, horizonY - 19, 32, 32);
+
+          // Bright golden core flame
+          bgCtx.fillStyle = '#fff9d6';
+          bgCtx.beginPath();
+          bgCtx.arc(lx, horizonY - 3.5, 2.1, 0, Math.PI * 2);
+          bgCtx.fill();
+        }
+      }
+
+      // Populate Stars, Lanterns, Fireflies & Initial Krathongs ----------------
+      function initAmbientEntities() {
+        stars.length = 0;
+        for (let i = 0; i < 95; i++) {
+          stars.push({
+            x: Math.random() * viewW,
+            y: Math.random() * (horizonY * 0.78),
+            r: Math.random() * 1.35 + 0.55,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 1.6 + 0.8,
+            baseAlpha: Math.random() * 0.45 + 0.4
+          });
+        }
+
+        lanterns.length = 0;
+        for (let i = 0; i < 12; i++) {
+          lanterns.push({
+            x: Math.random() * viewW * 0.9 + viewW * 0.05,
+            y: Math.random() * (horizonY * 0.82) + horizonY * 0.06,
+            vy: -(Math.random() * 10 + 9),
+            swayPhase: Math.random() * Math.PI * 2,
+            swayAmp: Math.random() * 10 + 6,
+            scale: Math.random() * 0.35 + 0.45,
+            alpha: Math.random() * 0.25 + 0.72
+          });
+        }
+
+        fireflies.length = 0;
+        for (let i = 0; i < 14; i++) {
+          fireflies.push({
+            x: Math.random() * viewW,
+            y: horizonY + (Math.random() * 55 - 28),
+            vx: (Math.random() - 0.5) * 14,
+            vy: (Math.random() - 0.5) * 8,
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+
+        if (floatingKrathongs.length === 0) {
+          // Start with 3 serene krathongs drifting gently on the water
+          spawnFloatingKrathong('pink_lotus', 'ขอให้คืนนี้มีแต่ความสงบสุขและรอยยิ้ม 🌕', viewW * 0.28, horizonY + (viewH - horizonY) * 0.52, true);
+          spawnFloatingKrathong('white_lotus', 'ลอยความกังวลไปกับสายน้ำนะ 🪷', viewW * 0.68, horizonY + (viewH - horizonY) * 0.38, true);
+          spawnFloatingKrathong('sweet_rose', 'ขอให้สมหวังในทุกเรื่องที่ตั้งใจ ✨', viewW * 0.79, horizonY + (viewH - horizonY) * 0.66, true);
+        }
+      }
+
+      //Dynamic Interactive Spawners (With Strict Caps) ----------------
+      function spawnShootingStar(x, y) {
+        shootingStars.push({
+          x: x,
+          y: y,
+          vx: -(190 + Math.random() * 90),
+          vy: 105 + Math.random() * 55,
+          life: 1.0,
+          len: 52 + Math.random() * 26
+        });
+      }
+
+      function spawnLanternAt(x, y) {
+        if (lanterns.length > 24) lanterns.shift();
+        lanterns.push({
+          x: x,
+          y: y,
+          vy: -(Math.random() * 11 + 12),
+          swayPhase: Math.random() * Math.PI * 2,
+          swayAmp: Math.random() * 12 + 7,
+          scale: Math.random() * 0.28 + 0.62,
+          alpha: 0.95
+        });
+      }
+
+      function spawnRipple(x, y, maxRadius = 62) {
+        if (ripples.length >= MAX_RIPPLES) {
+          ripples.shift();
+        }
+        ripples.push({
+          x: x,
+          y: y,
+          r: 6,
+          maxR: maxRadius,
+          alpha: 0.8
+        });
+      }
+
+      function spawnTapParticles(x, y, count = 4, includeHeart = true) {
+        for (let i = 0; i < count; i++) {
+          if (particles.length >= MAX_PARTICLES) {
+            particles.shift();
+          }
+          const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
+          const speed = Math.random() * 34 + 18;
+          const isHeart = includeHeart && i === 0 && Math.random() > 0.35;
+          particles.push({
+            x: x + (Math.random() * 14 - 7),
+            y: y + (Math.random() * 8 - 4),
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 1.0,
+            decay: Math.random() * 0.45 + 0.65,
+            scale: Math.random() * 0.45 + 0.55,
+            kind: isHeart ? 'heart' : (Math.random() > 0.4 ? 'gold' : 'pink')
+          });
+        }
+      }
+
+      function spawnFloatingKrathong(type, wishText, startX, startY, isAmbient = false) {
+        const riverH = Math.max(100, viewH - horizonY);
+        const normDepth = Math.min(Math.max((startY - horizonY) / riverH, 0.12), 0.92);
+
+        const k = {
+          id: Math.random().toString(36).slice(2),
+          type: type,
+          wish: wishText,
+          x: startX,
+          y: startY,
+          // Newly released krathong enters gently from bottom-center and drifts smoothly outward
+          vx: isAmbient ? (Math.random() * 7 + 5) : (Math.random() * 10 + 7),
+          vy: isAmbient ? 0 : -(Math.random() * 7 + 9),
+          targetDepthY: isAmbient ? startY : (horizonY + riverH * (0.28 + Math.random() * 0.25)),
+          bobPhase: Math.random() * Math.PI * 2,
+          scaleBase: 0.48 + normDepth * 0.42,
+          wishTimer: isAmbient ? 0 : 4.5, // glow wish text for 4.5s on release
+          highlightTimer: isAmbient ? 0 : 1.5,
+          rippleClock: 0
+        };
+        floatingKrathongs.push(k);
+        if (floatingKrathongs.length > 14) {
+          floatingKrathongs.shift();
+        }
+      }
+
+      // Main 60fps Render & Animation Loop 
+      let lastTime = performance.now();
+
+      function renderFrame(now) {
+        const dt = Math.min((now - lastTime) / 1000, 0.05);
+        lastTime = now;
+        const timeSec = now * 0.001;
+
+        // Blit Pre-rendered Background Canvas (Ultra-fast single drawImage)
+        ctx.drawImage(bgCanvas, 0, 0, viewW, viewH);
+
+        // Draw Twinkling Stars
+        for (let i = 0; i < stars.length; i++) {
+          const s = stars[i];
+          const tw = 0.5 + 0.5 * Math.sin(timeSec * s.speed + s.phase);
+          ctx.globalAlpha = s.baseAlpha * (0.45 + tw * 0.55);
+          ctx.fillStyle = '#fffdf2';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r * (0.85 + tw * 0.3), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Draw Shooting Stars (from tapping stars)
+        for (let i = shootingStars.length - 1; i >= 0; i--) {
+          const st = shootingStars[i];
+          st.x += st.vx * dt;
+          st.y += st.vy * dt;
+          st.life -= dt * 1.15;
+
+          if (st.life <= 0) {
+            shootingStars.splice(i, 1);
+            continue;
+          }
+
+          const mag = Math.hypot(st.vx, st.vy);
+          const dx = (st.vx / mag) * st.len;
+          const dy = (st.vy / mag) * st.len;
+
+          const grad = ctx.createLinearGradient(st.x, st.y, st.x - dx, st.y - dy);
+          grad.addColorStop(0, `rgba(255, 250, 220, ${st.life})`);
+          grad.addColorStop(0.4, `rgba(255, 220, 150, ${st.life * 0.55})`);
+          grad.addColorStop(1, 'rgba(255, 210, 140, 0)');
+
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 2.2;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(st.x, st.y);
+          ctx.lineTo(st.x - dx, st.y - dy);
+          ctx.stroke();
+
+          // Bright head star
+          ctx.drawImage(sprites.sparkleGold, st.x - 10, st.y - 10, 20, 20);
+        }
+
+        // Draw Rising Khom Loy (Sky Lanterns)
+        for (let i = lanterns.length - 1; i >= 0; i--) {
+          const lt = lanterns[i];
+          lt.y += lt.vy * dt;
+          const swayX = Math.sin(timeSec * 0.9 + lt.swayPhase) * lt.swayAmp;
+
+          if (lt.y < -60) {
+            lt.y = horizonY - 12;
+            lt.x = Math.random() * viewW * 0.88 + viewW * 0.06;
+          }
+
+          // Fade smoothly near top or horizon
+          let fade = lt.alpha;
+          if (lt.y > horizonY - 35) fade *= Math.max(0, (horizonY - lt.y) / 35);
+          if (lt.y < 40) fade *= Math.max(0, lt.y / 40);
+
+          ctx.globalAlpha = fade;
+          const drawSize = 68 * lt.scale;
+          ctx.drawImage(sprites.lantern, lt.x + swayX - drawSize / 2, lt.y - drawSize / 2, drawSize, drawSize);
+        }
+        ctx.globalAlpha = 1;
+
+        // Draw Shimmering Scanline Water Reflections (Temple, Chedi, Bushes)
+        const reflH = reflCanvas.height / dpr;
+        const stripH = 4;
+        const riverH = viewH - horizonY;
+        const maxReflDraw = Math.min(reflH, riverH * 0.72);
+
+        for (let sy = 0; sy < maxReflDraw; sy += stripH) {
+          const progress = sy / maxReflDraw;
+          const alpha = (1 - progress) * 0.36;
+          const waveShift = Math.sin(timeSec * 2.1 + sy * 0.14) * (1.2 + progress * 3.5);
+
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(
+            reflCanvas,
+            0, sy * dpr, reflCanvas.width, stripH * dpr,
+            waveShift, horizonY + sy, viewW, stripH
+          );
+        }
+        ctx.globalAlpha = 1;
+
+        //  Moon Reflection Path 
+        const moonLines = 28;
+        for (let i = 0; i < moonLines; i++) {
+          const p = i / (moonLines - 1);
+          const ly = horizonY + 8 + p * (riverH * 0.76);
+          const envelope = Math.sin(p * Math.PI);
+          const waveW = (8 + envelope * 26) * (0.85 + 0.2 * Math.sin(timeSec * 2.4 + i * 0.6));
+          const waveX = moonPos.x + Math.sin(timeSec * 1.9 + i * 0.55) * 4.5;
+
+          ctx.strokeStyle = `rgba(242, 245, 250, ${(0.16 + envelope * 0.34).toFixed(2)})`;
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(waveX - waveW / 2, ly);
+          ctx.lineTo(waveX + waveW / 2, ly);
+          ctx.stroke();
+        }
+
+        // Prathip Lamp Reflections (Crisp double-tick golden reflections along horizon)
+        for (let i = 0; i < prathipLampsX.length; i++) {
+          const lx = prathipLampsX[i];
+          const flicker = 0.75 + 0.25 * Math.sin(timeSec * 3.5 + i * 1.3);
+          ctx.fillStyle = `rgba(255, 224, 138, ${(0.52 * flicker).toFixed(2)})`;
+          ctx.fillRect(lx - 3, horizonY + 5, 6, 1.6);
+          ctx.fillStyle = `rgba(255, 210, 115, ${(0.34 * flicker).toFixed(2)})`;
+          ctx.fillRect(lx - 2 + Math.sin(timeSec * 2 + i) * 0.8, horizonY + 11, 4, 1.4);
+          ctx.fillStyle = `rgba(255, 195, 100, ${(0.18 * flicker).toFixed(2)})`;
+          ctx.fillRect(lx - 1.5, horizonY + 17, 3, 1.2);
+        }
+
+        //Perspective-flattened Expanding Water Ripples (Capped <= 12)
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rp = ripples[i];
+          rp.r += dt * 36;
+          rp.alpha = Math.max(0, 1 - rp.r / rp.maxR) * 0.55;
+
+          if (rp.r >= rp.maxR) {
+            ripples.splice(i, 1);
+            continue;
+          }
+
+          ctx.strokeStyle = `rgba(215, 235, 250, ${rp.alpha.toFixed(2)})`;
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.ellipse(rp.x, rp.y, rp.r, rp.r * 0.28, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          if (rp.r > 14) {
+            ctx.strokeStyle = `rgba(255, 228, 175, ${(rp.alpha * 0.45).toFixed(2)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.ellipse(rp.x, rp.y, rp.r * 0.65, rp.r * 0.18, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+
+        // Update & Draw Floating Krathongs 
+        floatingKrathongs.sort((a, b) => a.y - b.y);
+
+        for (let i = 0; i < floatingKrathongs.length; i++) {
+          const k = floatingKrathongs[i];
+          k.x += k.vx * dt;
+          if (k.y > k.targetDepthY) {
+            k.y += k.vy * dt;
+            if (k.y < k.targetDepthY) k.y = k.targetDepthY;
+          }
+
+          if (k.x > viewW + 65) {
+            k.x = -65;
+          }
+
+          k.rippleClock += dt;
+          if (k.rippleClock > 2.6) {
+            k.rippleClock = 0;
+            spawnRipple(k.x, k.y + 8, 38);
+          }
+
+          if (k.wishTimer > 0) k.wishTimer = Math.max(0, k.wishTimer - dt);
+          if (k.highlightTimer > 0) k.highlightTimer = Math.max(0, k.highlightTimer - dt);
+
+          // Perspective scale shrinks gently as krathong moves deeper toward horizon
+          const depthRatio = Math.min(Math.max((k.y - horizonY) / riverH, 0.08), 1);
+          const scale = 0.44 + depthRatio * 0.48;
+          const bobY = Math.sin(timeSec * 2.2 + k.bobPhase) * 2.4;
+
+          const drawX = k.x;
+          const drawY = k.y + bobY;
+
+          // Warm candle light glow on water surface
+          const glowSz = 110 * scale;
+          ctx.globalAlpha = k.highlightTimer > 0 ? 0.95 : 0.72;
+          ctx.drawImage(sprites.glowGold, drawX - glowSz / 2, drawY - glowSz * 0.45, glowSz, glowSz * 0.7);
+          ctx.globalAlpha = 1;
+
+          // Draw pre-rendered realistic krathong body
+          const kSprite = sprites.krathongs[k.type] || sprites.krathongs.pink_lotus;
+          const kw = 104 * scale;
+          const kh = 84 * scale;
+          ctx.drawImage(kSprite, drawX - kw / 2, drawY - kh * 0.65, kw, kh);
+
+          // Draw dynamic flickering candle flame on top
+          const flameX = drawX;
+          const flameY = drawY - kh * 0.45;
+          const flickerScale = 0.88 + 0.22 * Math.sin(timeSec * 14 + k.bobPhase);
+          const sway = Math.sin(timeSec * 9 + k.bobPhase) * 1.1;
+
+          ctx.save();
+          ctx.translate(flameX, flameY);
+          ctx.scale(scale * flickerScale, scale * flickerScale);
+          // Flame outer halo
+          ctx.fillStyle = 'rgba(255, 200, 75, 0.38)';
+          ctx.beginPath();
+          ctx.arc(sway * 0.5, -5, 10, 0, Math.PI * 2);
+          ctx.fill();
+          // Outer orange flame
+          ctx.fillStyle = '#ff9f1c';
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.quadraticCurveTo(-4.5, -5, sway, -13);
+          ctx.quadraticCurveTo(4.5, -5, 0, 0);
+          ctx.fill();
+          // Inner bright white-gold core
+          ctx.fillStyle = '#fff9d6';
+          ctx.beginPath();
+          ctx.moveTo(0, -1);
+          ctx.quadraticCurveTo(-2.2, -4, sway * 0.6, -9);
+          ctx.quadraticCurveTo(2.2, -4, 0, -1);
+          ctx.fill();
+          ctx.restore();
+
+          // Float wish text above krathong when recently released or tapped
+          if (k.wishTimer > 0) {
+            const wAlpha = k.wishTimer < 0.8 ? k.wishTimer / 0.8 : 1;
+            ctx.save();
+            ctx.globalAlpha = wAlpha;
+            ctx.font = `600 ${Math.round(12 * Math.max(0.85, scale))}px 'Prompt', 'Noto Sans Thai', sans-serif`;
+            const textWidth = Math.min(ctx.measureText(k.wish).width + 20, viewW * 0.72);
+            const pillX = Math.min(Math.max(drawX, textWidth / 2 + 12), viewW - textWidth / 2 - 12);
+            const pillY = drawY - kh * 0.82 - 14;
+
+            ctx.fillStyle = 'rgba(13, 24, 38, 0.82)';
+            ctx.strokeStyle = 'rgba(246, 211, 127, 0.65)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(pillX - textWidth / 2, pillY - 12, textWidth, 24, 12);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#fde68a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(k.wish, pillX, pillY, textWidth - 14);
+            ctx.restore();
+          }
+        }
+
+        // Golden Fireflies drifting gently near bushes & river edge
+        for (let i = 0; i < fireflies.length; i++) {
+          const ff = fireflies[i];
+          ff.x += ff.vx * dt;
+          ff.y += ff.vy * dt;
+          if (ff.x < 0) ff.x = viewW;
+          if (ff.x > viewW) ff.x = 0;
+          if (ff.y < horizonY - 38 || ff.y > horizonY + 45) ff.vy *= -1;
+
+          const glowAlpha = 0.25 + 0.65 * (0.5 + 0.5 * Math.sin(timeSec * 3.2 + ff.phase));
+          ctx.globalAlpha = glowAlpha;
+          ctx.drawImage(sprites.glowGold, ff.x - 10, ff.y - 10, 20, 20);
+          ctx.fillStyle = '#fff5b8';
+          ctx.beginPath();
+          ctx.arc(ff.x, ff.y, 1.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        // Tap Sparkles & Hearts (Capped <= 24)
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const pt = particles[i];
+          pt.x += pt.vx * dt;
+          pt.y += pt.vy * dt;
+          pt.vy -= 8 * dt;
+          pt.life -= pt.decay * dt;
+
+          if (pt.life <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          ctx.globalAlpha = Math.max(0, pt.life);
+          const sp = pt.kind === 'heart'
+            ? sprites.heart
+            : (pt.kind === 'gold' ? sprites.sparkleGold : sprites.sparklePink);
+          const sz = 22 * pt.scale;
+          ctx.drawImage(sp, pt.x - sz / 2, pt.y - sz / 2, sz, sz);
+        }
+        ctx.globalAlpha = 1;
+
+        requestAnimationFrame(renderFrame);
+      }
+
+      //  Canvas Touch  ----------------
+      function handleCanvasTap(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+
+        // Dismiss top hint smoothly after first interaction
+        const hintEl = document.getElementById('sky-hint-pill');
+        if (hintEl) hintEl.classList.add('opacity-0');
+
+        //  Check if tapped near any floating krathong first
+        for (let i = floatingKrathongs.length - 1; i >= 0; i--) {
+          const k = floatingKrathongs[i];
+          if (Math.hypot(x - k.x, y - (k.y - 10)) < 44) {
+            k.wishTimer = 4.2;
+            k.highlightTimer = 1.4;
+            spawnRipple(k.x, k.y + 8, 54);
+            spawnTapParticles(k.x, k.y - 15, 4, true);
+            playCandleSound();
+            return;
+          }
+        }
+
+        //Tapped on the River  Zero-lag ripple + particles + water-drop khim note
+        if (y >= horizonY) {
+          spawnRipple(x, y, 60);
+          spawnTapParticles(x, y, 3, true);
+          playWaterTapSound();
+          return;
+        }
+
+        // Tapped on the Sky  Check if near a star (or upper sky) for Shooting Star
+        let hitStar = false;
+        for (let i = 0; i < stars.length; i++) {
+          if (Math.hypot(x - stars[i].x, y - stars[i].y) < 30) {
+            hitStar = true;
+            break;
+          }
+        }
+
+        if (hitStar || y < horizonY * 0.42) {
+          spawnShootingStar(x + 25, Math.max(24, y - 10));
+          spawnTapParticles(x, y, 4, false);
+          playStarTapSound();
+        } else {
+          // Open twilight sky release a new glowing Khom Loy
+          spawnLanternAt(x, y);
+          spawnTapParticles(x, y, 3, false);
+          playLanternSound();
+        }
+      }
+
+      //  2x2 SVG Krathong Picker & 3-Step Ritual 
+      function getDetailedKrathongSVG(type, isLit) {
+        const flameSVG = isLit
+          ? `
+            <g class="svg-candle-flame">
+              <ellipse cx="60" cy="18" rx="9" ry="12" fill="rgba(255, 205, 80, 0.42)"/>
+              <path d="M60 6 C64.5 14, 65.5 21, 60 24 C54.5 21, 55.5 14, 60 6 Z" fill="#ff9f1c"/>
+              <path d="M60 11 C62.5 16, 63 20, 60 22 C57 20, 57.5 16, 60 11 Z" fill="#fff9d6"/>
+            </g>
+          `
+          : `<line x1="60" y1="21" x2="60" y2="26" stroke="#3e2723" stroke-width="1.8" stroke-linecap="round"/>`;
+
+        const centerCandle = `
+          <line x1="54" y1="45" x2="50" y2="23" stroke="#e9c46a" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="60" y1="45" x2="60" y2="21" stroke="#e9c46a" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="66" y1="45" x2="70" y2="23" stroke="#e9c46a" stroke-width="1.5" stroke-linecap="round"/>
+          ${isLit ? `
+            <circle cx="50" cy="23" r="1.5" fill="#ff595e"/>
+            <circle cx="60" cy="21" r="1.5" fill="#ff595e"/>
+            <circle cx="70" cy="23" r="1.5" fill="#ff595e"/>
+          ` : ''}
+          <rect x="57" y="26" width="6" height="20" rx="2" fill="#fff3c4" stroke="#eab308" stroke-width="0.9"/>
+          ${flameSVG}
+        `;
+
+        const leafBase = `
+          <ellipse cx="60" cy="79" rx="40" ry="10" fill="#3b8550" stroke="#225732" stroke-width="1.3"/>
+          <polygon points="24,76 30,62 36,76" fill="#4ca364"/>
+          <polygon points="84,76 90,62 96,76" fill="#4ca364"/>
+        `;
+
+        if (type === 'pink_lotus') {
+          return `
+            <svg viewBox="0 0 120 100" class="w-full h-full overflow-visible">
+              ${leafBase}
+              <path d="M22 74 Q20 49 38 56 Q37 70 40 76 Z" fill="#f9a8d4" stroke="#db2777" stroke-width="1"/>
+              <path d="M98 74 Q100 49 82 56 Q83 70 80 76 Z" fill="#f9a8d4" stroke="#db2777" stroke-width="1"/>
+              <path d="M33 76 Q34 45 50 52 Q50 70 50 78 Z" fill="#fff1f5" stroke="#f472b6" stroke-width="1"/>
+              <path d="M87 76 Q86 45 70 52 Q70 70 70 78 Z" fill="#fff1f5" stroke="#f472b6" stroke-width="1"/>
+              ${centerCandle}
+              <path d="M44 79 Q46 51 60 48 Q74 51 76 79 Z" fill="#ffffff" stroke="#f472b6" stroke-width="1.2"/>
+              <path d="M27 77 Q37 59 50 66 Q45 79 33 80 Z" fill="#f472b6" stroke="#be185d" stroke-width="0.9"/>
+              <path d="M93 77 Q83 59 70 66 Q75 79 87 80 Z" fill="#f472b6" stroke="#be185d" stroke-width="0.9"/>
+              <path d="M49 79 Q55 62 60 60 Q65 62 71 79 Z" fill="#fbcfe8" stroke="#ec4899" stroke-width="0.9"/>
+              <circle cx="60" cy="68" r="3.8" fill="#facc15"/>
+            </svg>
+          `;
+        }
+
+        if (type === 'white_lotus') {
+          return `
+            <svg viewBox="0 0 120 100" class="w-full h-full overflow-visible">
+              ${leafBase}
+              <path d="M22 74 Q20 49 38 56 Q37 70 40 76 Z" fill="#f1efe7" stroke="#94a3b8" stroke-width="1"/>
+              <path d="M98 74 Q100 49 82 56 Q83 70 80 76 Z" fill="#f1efe7" stroke="#94a3b8" stroke-width="1"/>
+              <path d="M33 76 Q34 45 50 52 Q50 70 50 78 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+              <path d="M87 76 Q86 45 70 52 Q70 70 70 78 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+              ${centerCandle}
+              <path d="M44 79 Q46 51 60 48 Q74 51 76 79 Z" fill="#fffef9" stroke="#cbd5e1" stroke-width="1.2"/>
+              <path d="M27 77 Q37 59 50 66 Q45 79 33 80 Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="0.9"/>
+              <path d="M93 77 Q83 59 70 66 Q75 79 87 80 Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="0.9"/>
+              <path d="M49 79 Q55 62 60 60 Q65 62 71 79 Z" fill="#fef9c3" stroke="#eab308" stroke-width="0.8"/>
+              <circle cx="60" cy="68" r="3.8" fill="#eab308"/>
+            </svg>
+          `;
+        }
+
+        if (type === 'marigold') {
+          return `
+            <svg viewBox="0 0 120 100" class="w-full h-full overflow-visible">
+              ${leafBase}
+              <circle cx="30" cy="70" r="8" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+              <circle cx="90" cy="70" r="8" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>
+              <circle cx="42" cy="67" r="9" fill="#fbbf24" stroke="#d97706" stroke-width="1"/>
+              <circle cx="78" cy="67" r="9" fill="#fbbf24" stroke="#d97706" stroke-width="1"/>
+              ${centerCandle}
+              <circle cx="36" cy="75" r="7" fill="#fffdf5" stroke="#e2e8f0" stroke-width="0.9"/>
+              <circle cx="84" cy="75" r="7" fill="#fffdf5" stroke="#e2e8f0" stroke-width="0.9"/>
+              <circle cx="48" cy="76" r="8.5" fill="#fbbf24" stroke="#d97706" stroke-width="1"/>
+              <circle cx="72" cy="76" r="8.5" fill="#fbbf24" stroke="#d97706" stroke-width="1"/>
+              <circle cx="60" cy="77" r="9" fill="#fde047" stroke="#eab308" stroke-width="1"/>
+            </svg>
+          `;
+        }
+
+        // 'sweet_rose'
+        return `
+          <svg viewBox="0 0 120 100" class="w-full h-full overflow-visible">
+            ${leafBase}
+            <path d="M23 73 Q22 51 39 58 Q38 71 40 76 Z" fill="#fda4af" stroke="#e11d48" stroke-width="1"/>
+            <path d="M97 73 Q98 51 81 58 Q82 71 80 76 Z" fill="#fda4af" stroke="#e11d48" stroke-width="1"/>
+            <path d="M35 76 Q36 48 51 55 Q50 71 50 78 Z" fill="#ffe4e6" stroke="#fb7185" stroke-width="1"/>
+            <path d="M85 76 Q84 48 69 55 Q70 71 70 78 Z" fill="#ffe4e6" stroke="#fb7185" stroke-width="1"/>
+            ${centerCandle}
+            <path d="M44 79 Q47 54 60 52 Q73 54 76 79 Z" fill="#fff1f2" stroke="#f43f5e" stroke-width="1.1"/>
+            <path d="M29 77 Q39 60 51 67 Q46 79 34 80 Z" fill="#fb7185" stroke="#be123c" stroke-width="0.9"/>
+            <path d="M91 77 Q81 60 69 67 Q74 79 86 80 Z" fill="#fb7185" stroke="#be123c" stroke-width="0.9"/>
+            <circle cx="60" cy="71" r="4.5" fill="#fde047"/>
+          </svg>
+        `;
+      }
+
+      const grid2x2 = document.getElementById('krathong-grid-2x2');
+      const wishInput = document.getElementById('wish-input');
+      const tapCandleBtn = document.getElementById('tap-candle-btn');
+      const candleAura = document.getElementById('candle-aura');
+      const candleStepSub = document.getElementById('candle-step-subtitle');
+      const step3WishQuote = document.getElementById('step3-wish-quote');
+      const launchKrathongBtn = document.getElementById('launch-krathong-btn');
+
+      function renderKrathong2x2() {
+        grid2x2.innerHTML = '';
+        KRATHONG_TYPES.forEach((item) => {
+          const active = state.selectedKrathong === item.id;
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = `flex flex-col items-center p-2.5 rounded-2xl border transition-all active:scale-95 text-center ${
+            active
+              ? 'bg-amber-300/20 border-amber-300 shadow-[0_0_18px_rgba(246,211,127,0.35)] scale-[1.01]'
+              : 'bg-white/5 border-white/15 hover:bg-white/10'
+          }`;
+
+          card.innerHTML = `
+            <div class="w-16 h-13 sm:w-18 sm:h-14 mb-1">${getDetailedKrathongSVG(item.id, false)}</div>
+            <span class="font-cute text-xs font-bold text-amber-100 leading-tight">${item.name}</span>
+            <span class="text-[10px] text-amber-100/70 mt-0.5">${item.sub}</span>
+          `;
+
+          card.addEventListener('click', () => {
+            state.selectedKrathong = item.id;
+            playKhimNote(783.99, 0, 0.55, 0.075);
+            renderKrathong2x2();
+          });
+          grid2x2.appendChild(card);
+        });
+      }
+
+      function goToStep(stepNum) {
+        state.step = stepNum;
+        document.getElementById('step-1-panel').classList.toggle('hidden', stepNum !== 1);
+        document.getElementById('step-2-panel').classList.toggle('hidden', stepNum !== 2);
+        document.getElementById('step-3-panel').classList.toggle('hidden', stepNum !== 3);
+
+        const titles = {
+          1: '1/3 เลือกกระทงคู่ใจ ',
+          2: '2/3 เขียนคำอธิษฐาน ',
+          3: '3/3 จุดเทียน & ลอยกระทง '
+        };
+        document.getElementById('step-title-badge').textContent = titles[stepNum];
+
+        [1, 2, 3].forEach((n) => {
+          const dot = document.getElementById(`step-dot-${n}`);
+          dot.className = n === stepNum
+            ? 'h-1.5 w-6 rounded-full bg-amber-300 transition-all'
+            : 'h-1.5 w-2 rounded-full bg-white/25 transition-all';
+        });
+
+        if (stepNum === 3) updateStep3CandleUI();
+      }
+
+      function updateStep3CandleUI() {
+        tapCandleBtn.innerHTML = getDetailedKrathongSVG(state.selectedKrathong, state.candleLit);
+        const wishStr = state.wish.trim() || 'ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨';
+        step3WishQuote.textContent = `"${wishStr}"`;
+
+        if (state.candleLit) {
+          candleAura.classList.remove('hidden');
+          candleStepSub.textContent = 'เทียนสว่างไสวแล้ว พร้อมปล่อยลงสายน้ำ ✨';
+          launchKrathongBtn.textContent = 'ปล่อยกระทงลงสายน้ำ ✨';
+          launchKrathongBtn.className = 'w-2/3 py-2.5 rounded-2xl bg-gradient-to-r from-[#fde047] via-[#f59e0b] to-[#fb7185] text-[#281506] font-cute font-bold text-xs sm:text-sm shadow-lg shadow-amber-400/35 active:scale-[0.98] transition';
+        } else {
+          candleAura.classList.add('hidden');
+          candleStepSub.textContent = 'แตะที่เทียนบนกระทงเพื่อจุดไฟอธิษฐานนะ 🕯️';
+          launchKrathongBtn.textContent = 'จุดเทียนอธิษฐาน 🕯️';
+          launchKrathongBtn.className = 'w-2/3 py-2.5 rounded-2xl bg-gradient-to-r from-amber-300 to-orange-400 text-[#281506] font-cute font-bold text-xs sm:text-sm shadow-lg shadow-amber-500/25 active:scale-[0.98] transition';
+        }
+      }
+
+      function setSheetCollapsed(collapsed) {
+        state.sheetCollapsed = collapsed;
+        const sheet = document.getElementById('glass-sheet');
+        const expandBtn = document.getElementById('expand-sheet-btn');
+        if (collapsed) {
+          sheet.classList.add('hidden');
+          expandBtn.classList.remove('hidden');
+          expandBtn.classList.add('flex');
+        } else {
+          expandBtn.classList.add('hidden');
+          expandBtn.classList.remove('flex');
+          sheet.classList.remove('hidden');
+        }
+      }
+
+      //  Bug-Free Envelope Modal & URL Personalization 
+      const letterModal = document.getElementById('letter-modal');
+      const envelopeContainer = document.getElementById('envelope-container');
+      const customizeModal = document.getElementById('customize-modal');
+      const toastBox = document.getElementById('toast-box');
+      const toastText = document.getElementById('toast-text');
+      let toastTimer = null;
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toastBox.classList.remove('opacity-0', '-translate-y-2');
+        toastBox.classList.add('opacity-100', 'translate-y-0');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastBox.classList.remove('opacity-100', 'translate-y-0');
+          toastBox.classList.add('opacity-0', '-translate-y-2');
+        }, 2600);
+      }
+
+      function loadPersonalization() {
+        try {
+          const saved = localStorage.getItem('loy_krathong_final_letter');
+          if (saved) state.letter = { ...DEFAULT_LETTER, ...JSON.parse(saved) };
+        } catch (err) { /* ignore */ }
+
+        try {
+          const params = new URLSearchParams(window.location.search);
+          if (params.get('to')) state.letter.to = params.get('to');
+          if (params.get('from')) state.letter.from = params.get('from');
+          if (params.get('msg')) state.letter.msg = params.get('msg');
+        } catch (err) { /* ignore */ }
+
+        syncLetterToDOM();
+      }
+
+      function syncLetterToDOM() {
+        document.getElementById('envelope-preview-to').textContent = state.letter.to;
+        document.getElementById('letter-to-display').textContent = state.letter.to;
+        document.getElementById('letter-from-display').textContent = state.letter.from;
+        document.getElementById('letter-msg-display').textContent = state.letter.msg;
+
+        document.getElementById('custom-to-input').value = state.letter.to;
+        document.getElementById('custom-from-input').value = state.letter.from;
+        document.getElementById('custom-msg-input').value = state.letter.msg;
+      }
+
+      function openLetterModal() {
+        // Always reset envelope cleanly to sealed state when opened
+        envelopeContainer.classList.remove('is-open');
+        letterModal.classList.remove('hidden');
+        const dot = document.getElementById('letter-notify-dot');
+        if (dot) dot.classList.add('hidden');
+        playKhimNote(659.25, 0, 0.7, 0.075);
+      }
+
+      function closeLetterModal() {
+        letterModal.classList.add('hidden');
+        envelopeContainer.classList.remove('is-open');
+      }
+
+      function saveAndCopyLink() {
+        const toVal = document.getElementById('custom-to-input').value.trim() || DEFAULT_LETTER.to;
+        const fromVal = document.getElementById('custom-from-input').value.trim() || DEFAULT_LETTER.from;
+        const msgVal = document.getElementById('custom-msg-input').value.trim() || DEFAULT_LETTER.msg;
+
+        state.letter = { to: toVal, from: fromVal, msg: msgVal };
+        syncLetterToDOM();
+
+        try {
+          localStorage.setItem('loy_krathong_final_letter', JSON.stringify(state.letter));
+        } catch (err) { /* ignore */ }
+
+        const baseUrl = window.location.href.split('?')[0];
+        const params = new URLSearchParams({ to: toVal, from: fromVal, msg: msgVal });
+        const fullUrl = `${baseUrl}?${params.toString()}`;
+
+        try {
+          window.history.replaceState({}, '', `?${params.toString()}`);
+        } catch (err) { /* ignore inside restricted iframes */ }
+
+        // Reliable clipboard copy with textarea fallback
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = fullUrl;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        } catch (err) {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(fullUrl).catch(() => {});
+          }
+        }
+
+        customizeModal.classList.add('hidden');
+        playCandleSound();
+        showToast('คัดลอกลิงก์สำเร็จ! ส่งให้คนพิเศษได้เลย 💌');
+      }
+
+      //  Event Bindings 
+      function bindUIEvents() {
+        // Canvas interaction (using pointerdown for crisp zero-delay touch & click)
+        canvas.addEventListener('pointerdown', (e) => {
+          handleCanvasTap(e.clientX, e.clientY);
+        });
+
+        // Sheet Collapse / Expand
+        document.getElementById('collapse-sheet-btn').addEventListener('click', () => {
+          playKhimNote(523.25, 0, 0.45, 0.06);
+          setSheetCollapsed(true);
+        });
+        document.getElementById('expand-sheet-btn').addEventListener('click', () => {
+          playKhimNote(659.25, 0, 0.5, 0.065);
+          setSheetCollapsed(false);
+        });
+
+        // Step Navigation
+        document.getElementById('to-step-2-btn').addEventListener('click', () => {
+          playKhimNote(659.25, 0, 0.6, 0.075);
+          goToStep(2);
+        });
+
+        document.getElementById('back-step-1-btn').addEventListener('click', () => {
+          playKhimNote(523.25, 0, 0.5, 0.06);
+          goToStep(1);
+        });
+
+        document.getElementById('to-step-3-btn').addEventListener('click', () => {
+          state.wish = wishInput.value.trim() || 'ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨';
+          state.candleLit = false;
+          playKhimNote(783.99, 0, 0.65, 0.075);
+          goToStep(3);
+        });
+
+        document.getElementById('back-step-2-btn').addEventListener('click', () => {
+          playKhimNote(587.33, 0, 0.5, 0.06);
+          goToStep(2);
+        });
+
+        // Preset Wish Chips
+        document.querySelectorAll('.wish-chip').forEach((chip) => {
+          chip.addEventListener('click', () => {
+            wishInput.value = chip.textContent.trim();
+            state.wish = wishInput.value;
+            playKhimNote(880, 0, 0.5, 0.065);
+          });
+        });
+        wishInput.addEventListener('input', () => {
+          state.wish = wishInput.value;
+        });
+
+        // Candle Lighting & Release
+        function igniteCandle() {
+          if (!state.candleLit) {
+            state.candleLit = true;
+            playCandleSound();
+            updateStep3CandleUI();
+          }
+        }
+
+        tapCandleBtn.addEventListener('click', igniteCandle);
+        launchKrathongBtn.addEventListener('click', () => {
+          if (!state.candleLit) {
+            igniteCandle();
+            return;
+          }
+          const wishText = state.wish.trim() || 'ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨';
+          const startX = viewW * 0.5;
+          const startY = viewH - 72;
+          spawnFloatingKrathong(state.selectedKrathong, wishText, startX, startY, false);
+          spawnRipple(startX, startY + 8, 66);
+          spawnTapParticles(startX, startY - 12, 8, true);
+          playReleaseSound();
+          showToast('ปล่อยกระทงลงสายน้ำแล้ว ขอให้คำอธิษฐานเป็นจริง ✨');
+
+          state.candleLit = false;
+          goToStep(1);
+          setSheetCollapsed(true);
+        });
+
+        // Sound Toggle
+        document.getElementById('sound-toggle-btn').addEventListener('click', () => {
+          state.soundEnabled = !state.soundEnabled;
+          document.getElementById('sound-icon').textContent = state.soundEnabled ? '🔊' : '🔇';
+          if (state.soundEnabled) {
+            playKhimNote(783.99, 0, 0.65, 0.08);
+            showToast('เปิดเสียงขิมและสายน้ำแล้ว 🔊');
+          } else {
+            showToast('ปิดเสียงเรียบร้อย 🔇');
+          }
+        });
+
+        // Bug-Free Envelope Modal Events
+        document.getElementById('open-letter-btn').addEventListener('click', openLetterModal);
+        document.getElementById('close-letter-modal-btn').addEventListener('click', closeLetterModal);
+        document.getElementById('keep-in-heart-btn').addEventListener('click', () => {
+          playKhimNote(880, 0, 0.7, 0.08);
+          closeLetterModal();
+        });
+        letterModal.addEventListener('click', (e) => {
+          if (e.target === letterModal) closeLetterModal();
+        });
+
+        const envelopeTrigger = document.getElementById('envelope-sealed-trigger');
+        envelopeTrigger.addEventListener('click', () => {
+          if (!envelopeContainer.classList.contains('is-open')) {
+            envelopeContainer.classList.add('is-open');
+            playEnvelopeSound();
+          }
+        });
+
+        // Customize & Share Modal Events
+        document.getElementById('open-customize-btn').addEventListener('click', () => {
+          syncLetterToDOM();
+          customizeModal.classList.remove('hidden');
+        });
+        document.getElementById('close-customize-btn').addEventListener('click', () => {
+          customizeModal.classList.add('hidden');
+        });
+        customizeModal.addEventListener('click', (e) => {
+          if (e.target === customizeModal) customizeModal.classList.add('hidden');
+        });
+        document.getElementById('save-and-copy-btn').addEventListener('click', saveAndCopyLink);
+      }
+
+      // Resize & Initialization 
+      function handleResize() {
+        viewW = window.innerWidth;
+        viewH = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        canvas.width = Math.floor(viewW * dpr);
+        canvas.height = Math.floor(viewH * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        buildBackgroundScene();
+        initAmbientEntities();
+      }
+
+      window.onload = function () {
+        initSprites();
+        loadPersonalization();
+        handleResize();
+        renderKrathong2x2();
+        goToStep(1);
+        bindUIEvents();
+
+        window.addEventListener('resize', handleResize);
+        lastTime = performance.now();
+        requestAnimationFrame(renderFrame);
+      };
+    })();
+  </script>
+</body>
+</html>
