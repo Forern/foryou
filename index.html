@@ -208,6 +208,9 @@
   <!-- ===================== 1. Fullscreen Interactive HTML5 Canvas ===================== -->
   <canvas id="scene-canvas" class="fixed inset-0 w-full h-full block z-0 cursor-pointer"></canvas>
 
+  <!-- Floating Wish Pills Layer (Pixel-perfect HTML/CSS alignment) -->
+  <div id="wish-pills-layer" class="fixed inset-0 z-10 pointer-events-none overflow-hidden"></div>
+
   <!-- ===================== 2. Top Header Overlay ===================== -->
   <header class="fixed top-0 inset-x-0 z-20 pointer-events-none px-3.5 pt-2.5 sm:px-6 sm:pt-4">
     <div class="relative max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
@@ -217,6 +220,7 @@
         <button id="open-letter-btn" type="button" aria-label="เปิดจดหมายน้อย"
           class="relative h-9 sm:h-10 px-3 sm:px-3.5 rounded-full glass-panel flex items-center gap-1.5 text-xs font-cute font-semibold text-amber-100 hover:bg-white/10 active:scale-95 transition">
           <span class="text-sm sm:text-base">💌</span>
+          <span class="hidden sm:inline">ข้อความถึงเธอ</span>
           <span id="letter-notify-dot" class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-300 notify-dot"></span>
         </button>
 
@@ -372,7 +376,7 @@
       <!-- Envelope Stage -->
       <div id="envelope-container" class="envelope-container">
 
-        <!-- Sealed Envelope Trigger (Button for 100% reliable iOS tap) -->
+        <!-- Sealed Envelope Trigger -->
         <button id="envelope-sealed-trigger" type="button" class="envelope-body block w-full text-left focus:outline-none" aria-label="แตะเพื่อเปิดซองจดหมาย">
           <div class="envelope-flap">
             <div class="envelope-flap-shape"></div>
@@ -387,7 +391,7 @@
           </div>
         </button>
 
-        <!-- Parchment Letter (Shown cleanly after envelope opens) -->
+        <!-- Parchment Letter -->
         <div id="parchment-letter-card" class="hidden parchment-letter p-5 sm:p-6">
           <div class="text-center space-y-3">
             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 border border-amber-300 text-2xl shadow-inner">
@@ -557,7 +561,6 @@
         }
       }
 
-      // Unlock Web Audio reliably on iOS Safari (must run inside touchend / click)
       function unlockAudio() {
         const ctx = initAudio();
         if (!ctx) return;
@@ -710,6 +713,7 @@
       // ---------------- 3. Canvas & Offscreen Sprite Architecture ----------------
       const canvas = document.getElementById('scene-canvas');
       const ctx = canvas.getContext('2d', { alpha: false });
+      const wishPillsLayer = document.getElementById('wish-pills-layer');
 
       let viewW = 0;
       let viewH = 0;
@@ -1009,7 +1013,6 @@
         bgCtx.fillStyle = skyGrad;
         bgCtx.fillRect(0, 0, viewW, horizonY + 2);
 
-        // Full Moon (positioned cleanly below header on mobile)
         const moonX = viewW * 0.18;
         const moonY = viewW < 640 ? Math.max(horizonY * 0.32, 165) : horizonY * 0.24;
         const moonR = Math.max(20, Math.min(viewW * 0.068, 36));
@@ -1355,21 +1358,16 @@
           scaleBase: 0.48 + normDepth * 0.42,
           wishTimer: isAmbient ? 0 : 4.5,
           highlightTimer: isAmbient ? 0 : 1.5,
-          rippleClock: 0
+          rippleClock: 0,
+          pillEl: null
         };
         floatingKrathongs.push(k);
         if (floatingKrathongs.length > 14) {
-          floatingKrathongs.shift();
+          const removed = floatingKrathongs.shift();
+          if (removed && removed.pillEl && removed.pillEl.parentNode) {
+            removed.pillEl.parentNode.removeChild(removed.pillEl);
+          }
         }
-      }
-
-      function fitTextToWidth(cCtx, text, maxWidth) {
-        if (cCtx.measureText(text).width <= maxWidth) return text;
-        let clipped = text;
-        while (clipped.length > 1 && cCtx.measureText(clipped + '…').width > maxWidth) {
-          clipped = clipped.slice(0, -1);
-        }
-        return clipped + '…';
       }
 
       // ---------------- 7. Main 60fps Render & Animation Loop ----------------
@@ -1581,33 +1579,27 @@
           ctx.fill();
           ctx.restore();
 
-          // Float wish text strictly clamped & trimmed cleanly inside mobile viewport
+          // Float wish pill using HTML/CSS layer for 100% centered text & border alignment
           if (k.wishTimer > 0) {
+            if (!k.pillEl) {
+              k.pillEl = document.createElement('div');
+              k.pillEl.className = 'fixed top-0 left-0 px-3 py-1 rounded-full bg-[#0d1826]/90 border border-[#f6d37f]/70 text-[#fde68a] font-cute text-[11px] sm:text-xs font-medium shadow-lg whitespace-nowrap truncate max-w-[78vw] text-center pointer-events-none';
+              k.pillEl.textContent = k.wish;
+              wishPillsLayer.appendChild(k.pillEl);
+            }
+            if (k.pillEl.textContent !== k.wish) {
+              k.pillEl.textContent = k.wish;
+            }
+            k.pillEl.style.display = 'block';
+            const pillW = k.pillEl.offsetWidth;
+            const pillH = k.pillEl.offsetHeight;
+            const pillLeft = Math.max(12, Math.min(drawX - pillW / 2, viewW - pillW - 12));
+            const pillTop = Math.max(horizonY + 8, drawY - kh * 0.85 - pillH - 6);
             const wAlpha = k.wishTimer < 0.8 ? k.wishTimer / 0.8 : 1;
-            ctx.save();
-            ctx.globalAlpha = wAlpha;
-            const fontSize = Math.round(12 * Math.max(0.88, scale));
-            ctx.font = `500 ${fontSize}px 'Prompt', 'Noto Sans Thai', sans-serif`;
-
-            const maxPillW = Math.max(120, Math.min(viewW - 24, viewW * 0.72));
-            const displayWish = fitTextToWidth(ctx, k.wish, maxPillW - 24);
-            const pillW = Math.min(ctx.measureText(displayWish).width + 24, maxPillW);
-            const pillX = Math.max(pillW / 2 + 12, Math.min(drawX, viewW - pillW / 2 - 12));
-            const pillY = Math.max(horizonY + 18, drawY - kh * 0.82 - 14);
-
-            ctx.fillStyle = 'rgba(13, 24, 38, 0.86)';
-            ctx.strokeStyle = 'rgba(246, 211, 127, 0.7)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(pillX - pillW / 2, pillY - 13, pillW, 26, 13);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.fillStyle = '#fde68a';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(displayWish, pillX, pillY + 0.5);
-            ctx.restore();
+            k.pillEl.style.opacity = wAlpha.toFixed(2);
+            k.pillEl.style.transform = `translate3d(${pillLeft.toFixed(1)}px, ${pillTop.toFixed(1)}px, 0)`;
+          } else if (k.pillEl && k.pillEl.style.display !== 'none') {
+            k.pillEl.style.display = 'none';
           }
         }
 
@@ -2002,11 +1994,9 @@
 
       // ---------------- 11. Event Bindings ----------------
       function bindUIEvents() {
-        // Global iOS Web Audio unlock on trusted user gestures
         document.addEventListener('touchend', unlockAudio, { passive: true });
         document.addEventListener('click', unlockAudio, { passive: true });
 
-        // Canvas click fires reliably with zero delay (touch-action: manipulation) & unlocks iOS audio
         canvas.addEventListener('click', (e) => {
           unlockAudio();
           handleCanvasTap(e.clientX, e.clientY);
