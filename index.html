@@ -7,6 +7,8 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Prompt & Noto Sans Thai -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -72,20 +74,14 @@
       50% { transform: scale(1.35); opacity: 0.55; }
     }
 
-    /* ================= Bug-Free Interactive 3D Envelope & Parchment Letter ================= */
-    .envelope-perspective {
-      perspective: 1100px;
-    }
-
+    /* ================= iOS-Safe Interactive Envelope & Parchment Letter ================= */
     .envelope-container {
       position: relative;
       width: 100%;
       max-width: 340px;
       margin: 0 auto;
-      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* Sealed Envelope Box */
     .envelope-body {
       position: relative;
       width: 100%;
@@ -94,15 +90,19 @@
       background: linear-gradient(145deg, #f7e4c6 0%, #ebd0a7 100%);
       box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55), inset 0 0 0 1.5px rgba(212, 163, 94, 0.5);
       cursor: pointer;
-      transition: opacity 0.4s ease, transform 0.45s ease;
+      overflow: hidden;
+      transition: opacity 0.32s ease, transform 0.35s ease;
     }
 
-    /* Front Pocket Flaps (Left, Right, Bottom visual folds) */
+    .envelope-container.is-opening .envelope-body {
+      opacity: 0;
+      transform: translateY(18px) scale(0.94);
+    }
+
     .envelope-pocket {
       position: absolute;
       inset: 0;
       border-radius: 18px;
-      overflow: hidden;
       pointer-events: none;
       z-index: 4;
     }
@@ -129,7 +129,6 @@
       border-top: 1px solid rgba(180, 125, 65, 0.25);
     }
 
-    /* Top Flap with smooth 3D rotation */
     .envelope-flap {
       position: absolute;
       top: 0;
@@ -137,10 +136,13 @@
       right: 0;
       height: 58%;
       transform-origin: top center;
-      transform: rotateX(0deg);
-      transition: transform 0.65s cubic-bezier(0.34, 1.4, 0.64, 1), z-index 0.2s;
+      transition: transform 0.35s ease;
       z-index: 6;
-      pointer-events: auto;
+      pointer-events: none;
+    }
+
+    .envelope-container.is-opening .envelope-flap {
+      transform: scaleY(-0.65);
     }
 
     .envelope-flap-shape {
@@ -148,12 +150,9 @@
       height: 100%;
       background: linear-gradient(180deg, #f9ebd2 0%, #e7c79a 100%);
       clip-path: polygon(0 0, 100% 0, 50% 100%);
-      border-top-left-radius: 18px;
-      border-top-right-radius: 18px;
       box-shadow: 0 4px 12px rgba(90, 50, 20, 0.2);
     }
 
-    /* Wax Heart Seal */
     .wax-seal {
       position: absolute;
       top: 52%;
@@ -168,47 +167,32 @@
       align-items: center;
       justify-content: center;
       z-index: 8;
-      transition: transform 0.35s ease, opacity 0.35s ease;
-    }
-
-    /* Open State for Envelope */
-    .envelope-container.is-open .envelope-flap {
-      transform: rotateX(180deg);
-      z-index: 1;
       pointer-events: none;
+      transition: transform 0.25s ease, opacity 0.25s ease;
     }
 
-    .envelope-container.is-open .wax-seal {
+    .envelope-container.is-opening .wax-seal {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(0.4);
-      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0.45);
     }
 
-    .envelope-container.is-open .envelope-body {
-      opacity: 0;
-      transform: translateY(36px) scale(0.92);
-      pointer-events: none;
-    }
-
-    /* Parchment Letter Card (Slides in gracefully when opened) */
     .parchment-letter {
-      position: relative;
       width: 100%;
       background: linear-gradient(180deg, #fffcf4 0%, #fdf3df 55%, #f9e8c8 100%);
       border: 2px solid #e6c68e;
       border-radius: 22px;
       color: #462b1c;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 0 25px rgba(220, 175, 105, 0.2);
-      transform: translateY(25px) scale(0.94);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, opacity 0.45s ease 0.15s;
+      animation: letterReveal 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    .envelope-container.is-open .parchment-letter {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-      pointer-events: auto;
+    @keyframes letterReveal {
+      from { opacity: 0; transform: translateY(18px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .ios-scroll {
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Custom Scrollbar */
@@ -221,12 +205,12 @@
 </head>
 <body class="relative w-full h-[100dvh] overflow-hidden">
 
-  <!-- Fullscreen Interactive HTML5 Canvas -->
+  <!-- ===================== 1. Fullscreen Interactive HTML5 Canvas ===================== -->
   <canvas id="scene-canvas" class="fixed inset-0 w-full h-full block z-0 cursor-pointer"></canvas>
 
-  <!--Top Header Overlay  -->
-  <header class="fixed top-0 inset-x-0 z-20 pointer-events-none px-3.5 pt-3 sm:px-6 sm:pt-4">
-    <div class="relative max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2">
+  <!-- ===================== 2. Top Header Overlay ===================== -->
+  <header class="fixed top-0 inset-x-0 z-20 pointer-events-none px-3.5 pt-2.5 sm:px-6 sm:pt-4">
+    <div class="relative max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
       <!-- Top-Right Action Icons -->
       <div class="pointer-events-auto self-end sm:self-auto sm:absolute sm:right-0 sm:top-0.5 flex items-center gap-1.5 sm:gap-2 shrink-0 pt-0.5">
         <!-- Letter Button with Glowing Dot -->
@@ -256,16 +240,16 @@
         <h1 class="font-calligraphy text-2xl sm:text-4xl font-bold text-[#f7dca0] tracking-wide drop-shadow-[0_2px_12px_rgba(255,205,110,0.45)] leading-tight">
           ลอยกระทงอธิษฐาน
         </h1>
-        <p class="font-cute text-[11px] sm:text-sm text-[#efe0d2]/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)] mt-0.5">
+        <p class="font-cute text-[11px] sm:text-sm text-[#efe0d2]/95 drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] mt-0.5">
           ลอยความทุกข์ไปกับสายน้ำ ให้ความสุขลอยเข้ามา
         </p>
       </div>
     </div>
   </header>
 
-  <!-- Subtle Interactive Hint Pill  -->
-  <div id="sky-hint-pill" class="fixed top-[108px] sm:top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none transition-opacity duration-700">
-    <span class="inline-block px-3 py-1 rounded-full bg-black/25 backdrop-blur-sm border border-amber-200/15 text-[10px] sm:text-xs font-cute text-amber-100/80 whitespace-nowrap">
+  <!-- Subtle Interactive Hint Pill (Auto-fades softly) -->
+  <div id="sky-hint-pill" class="fixed top-[106px] sm:top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-none transition-opacity duration-700 max-w-[92vw]">
+    <span class="inline-block px-3 py-1 rounded-full bg-black/35 backdrop-blur-sm border border-amber-200/15 text-[10px] sm:text-xs font-cute text-amber-100/85 truncate max-w-full">
       ✨ แตะดาวขอพรดาวตก • แตะท้องฟ้าปล่อยโคม • แตะผิวน้ำสร้างคลื่น
     </span>
   </div>
@@ -301,10 +285,10 @@
         </button>
       </div>
 
-      <!--  STRICTLY 2x2 Grid (Top 2 + Bottom 2) -->
+      <!-- STEP 1: STRICTLY 2x2 Grid (Top 2 + Bottom 2) -->
       <div id="step-1-panel" class="space-y-3">
         <div id="krathong-grid-2x2" class="grid grid-cols-2 gap-2.5">
-         
+          <!-- Generated cleanly by JS -->
         </div>
 
         <button id="to-step-2-btn" type="button"
@@ -313,7 +297,7 @@
         </button>
       </div>
 
-      <!--  Wish Input & Heartfelt Presets -->
+      <!-- STEP 2: Wish Input & Heartfelt Presets -->
       <div id="step-2-panel" class="hidden space-y-2.5">
         <div class="text-center">
           <p class="font-cute text-xs text-amber-100/90">ส่งคำอธิษฐานดีๆ ไปพร้อมกับสายน้ำคืนเพ็ญ 🌕</p>
@@ -323,11 +307,11 @@
           placeholder="พิมพ์คำอธิษฐานของเธอตรงนี้เลย..."
           class="w-full px-3.5 py-2.5 rounded-2xl bg-white/10 border border-amber-200/30 text-xs sm:text-sm text-white placeholder-slate-300/60 font-cute focus:outline-none focus:ring-2 focus:ring-amber-300/70" />
 
-        <!--  Heartfelt Preset Chips -->
+        <!-- 4 Heartfelt Preset Chips -->
         <div class="flex flex-wrap gap-1.5 justify-center">
           <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-amber-300/15 hover:bg-amber-300/25 border border-amber-200/25 text-[11px] font-cute text-amber-100 active:scale-95 transition">ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨</button>
           <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-pink-300/15 hover:bg-pink-300/25 border border-pink-200/25 text-[11px] font-cute text-pink-100 active:scale-95 transition">ขอให้สมหวังในสิ่งที่ตั้งใจนะ 💫</button>
-          <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-rose-300/15 hover:bg-rose-300/25 border border-rose-200/25 text-[11px] font-cute text-rose-100 active:scale-95 transition">ขอให้ได้อยู่ข้าง กันไปนานๆ 💖</button>
+          <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-rose-300/15 hover:bg-rose-300/25 border border-rose-200/25 text-[11px] font-cute text-rose-100 active:scale-95 transition">ขอให้ได้เดินข้างๆ กันไปนานๆ 💖</button>
           <button type="button" class="wish-chip px-2.5 py-1 rounded-full bg-emerald-300/15 hover:bg-emerald-300/25 border border-emerald-200/25 text-[11px] font-cute text-emerald-100 active:scale-95 transition">ลอยความเหนื่อยล้า เหลือไว้แต่ความสุข 🪷</button>
         </div>
 
@@ -343,7 +327,7 @@
         </div>
       </div>
 
-      <!--  Interactive Candle Lighting & Release -->
+      <!-- STEP 3: Interactive Candle Lighting & Release -->
       <div id="step-3-panel" class="hidden space-y-2.5 text-center">
         <p id="candle-step-subtitle" class="font-cute text-xs text-amber-200/95">
           แตะที่เทียนบนกระทงเพื่อจุดไฟอธิษฐานนะ 🕯️
@@ -375,11 +359,11 @@
     </div>
   </section>
 
-  <!-- Bug-Free Romantic Envelope & Letter Modal (z-100)  -->
+  <!-- ===================== 4. iOS-Safe Envelope & Letter Modal (z-100) ===================== -->
   <div id="letter-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-    <div class="relative w-full max-w-[380px] envelope-perspective">
+    <div class="relative w-full max-w-[380px]">
 
-      <!-- Explicit Close Button (Always clickable on top) -->
+      <!-- Explicit Close Button -->
       <button id="close-letter-modal-btn" type="button" aria-label="ปิดหน้าต่างจดหมาย"
         class="absolute -top-3 -right-1 sm:-right-3 z-30 w-9 h-9 rounded-full bg-[#fdf3df] text-[#5c341d] border border-amber-300 shadow-lg flex items-center justify-center font-bold text-sm hover:bg-amber-100 active:scale-90 transition">
         ✕
@@ -388,30 +372,23 @@
       <!-- Envelope Stage -->
       <div id="envelope-container" class="envelope-container">
 
-        <!-- Sealed Envelope Visual (Click anywhere to open) -->
-        <div id="envelope-sealed-trigger" class="envelope-body" role="button" tabindex="0" aria-label="แตะเพื่อเปิดซองจดหมาย">
-          <!-- Top 3D Flap -->
+        <!-- Sealed Envelope Trigger (Button for 100% reliable iOS tap) -->
+        <button id="envelope-sealed-trigger" type="button" class="envelope-body block w-full text-left focus:outline-none" aria-label="แตะเพื่อเปิดซองจดหมาย">
           <div class="envelope-flap">
             <div class="envelope-flap-shape"></div>
           </div>
-
-          <!-- Pocket Folds -->
           <div class="envelope-pocket"></div>
-
-          <!-- Wax Heart Seal -->
           <div class="wax-seal">
             <span class="text-xl drop-shadow">💖</span>
           </div>
-
-          <!-- Envelope Label -->
-          <div class="absolute bottom-4 inset-x-0 text-center z-10 pointer-events-none">
-            <p class="font-calligraphy text-lg font-bold text-[#6e3f23]">ถึง... <span id="envelope-preview-to">คนพิเศษ</span></p>
+          <div class="absolute bottom-4 inset-x-0 text-center z-10 pointer-events-none px-3">
+            <p class="font-calligraphy text-lg font-bold text-[#6e3f23] truncate">ถึง... <span id="envelope-preview-to">ฟอเฟิร์น</span></p>
             <p class="font-cute text-[11px] text-[#9b6642] mt-0.5 animate-pulse">แตะที่ซองเพื่อเปิดอ่านนะ 💌</p>
           </div>
-        </div>
+        </button>
 
-        <!-- Parchment Letter (Revealed smoothly inside the exact same container) -->
-        <div class="parchment-letter p-5 sm:p-6 -mt-[215px]">
+        <!-- Parchment Letter (Shown cleanly after envelope opens) -->
+        <div id="parchment-letter-card" class="hidden parchment-letter p-5 sm:p-6">
           <div class="text-center space-y-3">
             <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 border border-amber-300 text-2xl shadow-inner">
               🪷
@@ -419,19 +396,19 @@
 
             <div>
               <p class="font-cute text-[11px] text-amber-700 font-semibold tracking-wider">สุขสันต์วันลอยกระทง</p>
-              <h2 class="font-calligraphy text-2xl sm:text-3xl font-bold text-[#7c3415] mt-0.5">
-                ถึง <span id="letter-to-display">คนพิเศษ</span> ✨
+              <h2 class="font-calligraphy text-2xl sm:text-3xl font-bold text-[#7c3415] mt-0.5 break-words">
+                ถึง <span id="letter-to-display">ฟอเฟิร์น</span> ✨
               </h2>
             </div>
 
-            <div class="p-4 rounded-2xl bg-white/75 border border-amber-200/90 shadow-inner text-left text-xs sm:text-sm font-cute leading-relaxed text-[#4f311f] max-h-[38dvh] overflow-y-auto gold-scroll">
-              <p id="letter-msg-display" class="whitespace-pre-line">
-                คืนนี้พระจันทร์สวยจัง... เลยอยากชวนมาลอยกระทงด้วยกัน แม้จะอยู่คนละที่ แต่อยากให้รู้ว่ามีคนตรงนี้คอยเป็นกำลังใจและคิดถึงเสมอนะ ขอให้ทุกคำอธิษฐานของเธอเป็นจริง ✨
+            <div class="p-4 rounded-2xl bg-white/80 border border-amber-200/90 shadow-inner text-left text-xs sm:text-sm font-cute leading-relaxed text-[#4f311f] max-h-[38dvh] overflow-y-auto gold-scroll ios-scroll">
+              <p id="letter-msg-display" class="whitespace-pre-line break-words">
+                คืนนี้พระจันทร์สวยดีนะ แต่ที่มึงอยู่น่าจะสวยกว่า ลองมองบนฟ้าดู เลยบอกหน่อยว่าสวยไหม แล้วก็ มาๆอธิษฐานกัน ... เก็บไว้ในใจ สปอยก้ได้ ขอให้มีความสุขมากๆทุกปี สาธุ สาธุ ✨
               </p>
             </div>
 
-            <p class="font-calligraphy text-lg sm:text-xl font-bold text-[#9c4c24] pt-0.5">
-              จาก <span id="letter-from-display">คนที่แอบยิ้มเวลาคุยกับเธอ</span>
+            <p class="font-calligraphy text-lg sm:text-xl font-bold text-[#9c4c24] pt-0.5 break-words">
+              จาก <span id="letter-from-display">ผู้ชายคนนึง</span>
             </p>
 
             <button id="keep-in-heart-btn" type="button"
@@ -445,9 +422,9 @@
     </div>
   </div>
 
-  <!--  Customize & Share Modal -->
+  <!-- ===================== 5. Customize & Share Modal (✏️) ===================== -->
   <div id="customize-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
-    <div class="relative w-full max-w-[390px] rounded-3xl glass-panel text-white p-5 max-h-[90dvh] overflow-y-auto gold-scroll">
+    <div class="relative w-full max-w-[390px] rounded-3xl glass-panel text-white p-5 max-h-[90dvh] overflow-y-auto gold-scroll ios-scroll">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-cute text-base sm:text-lg font-bold text-amber-200">✏️ แก้ไขข้อความ &amp; ส่งให้คนพิเศษ</h3>
         <button id="close-customize-btn" type="button"
@@ -487,24 +464,28 @@
     </div>
   </div>
 
-  <!-- Toast Notification Box (No alert()) -->
-  <div id="toast-box" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-[120] opacity-0 -translate-y-2 transition-all duration-300">
-    <div id="toast-text" class="px-4 py-2 rounded-full bg-[#132236]/95 text-amber-100 text-xs font-cute font-semibold shadow-xl border border-amber-200/35 whitespace-nowrap">
+  <!-- ===================== 6. Toast Notification Box ===================== -->
+  <div id="toast-box" class="pointer-events-none fixed top-16 left-1/2 -translate-x-1/2 z-[120] opacity-0 -translate-y-2 transition-all duration-300 max-w-[92vw]">
+    <div id="toast-text" class="px-4 py-2 rounded-full bg-[#132236]/95 text-amber-100 text-xs font-cute font-semibold shadow-xl border border-amber-200/35 truncate">
       คัดลอกลิงก์สำเร็จ! ส่งให้คนพิเศษได้เลย 💌
     </div>
   </div>
 
   <script>
-   
     (function () {
       'use strict';
 
-      // Configuration & Default State ----------------
+      // =========================================================================
+      //  >>> แก้ไขข้อความถาวรให้เธอคนเดียวตรงนี้ได้เลย (แก้ใน GitHub แล้ว Commit) <<<
+      // =========================================================================
       const DEFAULT_LETTER = {
-        to: 'คนพิเศษ',
-        from: 'คนที่แอบยิ้มเวลาคุยกับเธอ',
-        msg: 'คืนนี้พระจันทร์สวยจัง... เลยอยากชวนมาลอยกระทงด้วยกัน แม้จะอยู่คนละที่ แต่อยากให้รู้ว่ามีคนตรงนี้คอยเป็นกำลังใจและคิดถึงเสมอนะ ขอให้ทุกคำอธิษฐานของเธอเป็นจริง ✨'
+        to: 'ฟอเฟิร์น',
+        from: 'ผู้ชายคนนึง',
+        msg: 'คืนนี้พระจันทร์สวยดีนะ แต่ที่มึงอยู่น่าจะสวยกว่า ลองมองบนฟ้าดู เลยบอกหน่อยว่าสวยไหม แล้วก็ มาๆอธิษฐานกัน ... เก็บไว้ในใจ สปอยก้ได้ ขอให้มีความสุขมากๆทุกปี สาธุ สาธุ ✨'
       };
+      // =========================================================================
+
+      const STORAGE_KEY = 'loy_krathong_letter_v2';
 
       const KRATHONG_TYPES = [
         { id: 'pink_lotus', name: 'บัวหลวงชมพู', sub: 'ละมุนคลาสสิก' },
@@ -527,12 +508,12 @@
         melodyIndex: 0
       };
 
-      // Web Audio API: Tap-Only Thai Khim & Water Chimes
+      // ---------------- 2. Web Audio API (iOS Safari Unlocked) ----------------
       let audioCtx = null;
       let masterGain = null;
       let delayNode = null;
+      let audioUnlocked = false;
 
-      // Songkran / Thai Pentatonic melody  (C5, D5, E5, G5, A5, C6, D6, E6)
       const SONGKRAN_MELODY = [
         523.25, 659.25, 783.99, 880.00, 783.99, 659.25,
         587.33, 659.25, 783.99, 659.25, 587.33, 523.25,
@@ -541,15 +522,20 @@
 
       function initAudio() {
         try {
+          if (navigator.audioSession && navigator.audioSession.type !== 'playback') {
+            navigator.audioSession.type = 'playback';
+          }
+        } catch (err) { /* ignore if unsupported */ }
+
+        try {
           if (!audioCtx) {
             const Ctx = window.AudioContext || window.webkitAudioContext;
             if (!Ctx) return null;
             audioCtx = new Ctx();
 
             masterGain = audioCtx.createGain();
-            masterGain.gain.value = 0.75;
+            masterGain.gain.value = 0.85;
 
-            // Warm soft hall echo for Thai Khim resonance
             delayNode = audioCtx.createDelay(0.6);
             delayNode.delayTime.value = 0.22;
             const feedback = audioCtx.createGain();
@@ -565,134 +551,160 @@
 
             masterGain.connect(audioCtx.destination);
           }
-          if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-          }
           return audioCtx;
         } catch (err) {
           return null;
         }
       }
 
-      // Synthesize a single authentic plucked/struck Thai Khim note
-      function playKhimNote(freq, delaySec = 0, duration = 0.85, vol = 0.11) {
+      // Unlock Web Audio reliably on iOS Safari (must run inside touchend / click)
+      function unlockAudio() {
+        const ctx = initAudio();
+        if (!ctx) return;
+
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+
+        if (!audioUnlocked) {
+          try {
+            const buffer = ctx.createBuffer(1, 1, 22050);
+            const source = ctx.createBufferSource();
+            source.buffer = buffer;
+            source.connect(ctx.destination);
+            source.start(0);
+            audioUnlocked = true;
+          } catch (err) { /* ignore */ }
+        }
+      }
+
+      function playKhimNote(freq, delaySec = 0, duration = 0.85, vol = 0.13) {
         if (!state.soundEnabled) return;
         const ctx = initAudio();
         if (!ctx || !masterGain) return;
 
-        try {
-          const t = ctx.currentTime + delaySec;
+        const scheduleNote = () => {
+          try {
+            const t = ctx.currentTime + delaySec;
 
-          // Fundamental warm tone
-          const osc1 = ctx.createOscillator();
-          osc1.type = 'triangle';
-          osc1.frequency.setValueAtTime(freq, t);
+            const osc1 = ctx.createOscillator();
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(freq, t);
 
-          // Metallic string shimmer (2nd harmonic)
-          const osc2 = ctx.createOscillator();
-          osc2.type = 'sine';
-          osc2.frequency.setValueAtTime(freq * 2, t);
+            const osc2 = ctx.createOscillator();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(freq * 2, t);
 
-          // Soft octave shimmer
-          const osc3 = ctx.createOscillator();
-          osc3.type = 'sine';
-          osc3.frequency.setValueAtTime(freq * 3, t);
+            const osc3 = ctx.createOscillator();
+            osc3.type = 'sine';
+            osc3.frequency.setValueAtTime(freq * 3, t);
 
-          const gain1 = ctx.createGain();
-          const gain2 = ctx.createGain();
-          const gain3 = ctx.createGain();
+            const gain1 = ctx.createGain();
+            const gain2 = ctx.createGain();
+            const gain3 = ctx.createGain();
 
-          gain1.gain.setValueAtTime(0.0001, t);
-          gain1.gain.exponentialRampToValueAtTime(vol, t + 0.008);
-          gain1.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+            gain1.gain.setValueAtTime(0.0001, t);
+            gain1.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+            gain1.gain.exponentialRampToValueAtTime(0.0001, t + duration);
 
-          gain2.gain.setValueAtTime(0.0001, t);
-          gain2.gain.exponentialRampToValueAtTime(vol * 0.42, t + 0.005);
-          gain2.gain.exponentialRampToValueAtTime(0.0001, t + duration * 0.55);
+            gain2.gain.setValueAtTime(0.0001, t);
+            gain2.gain.exponentialRampToValueAtTime(vol * 0.42, t + 0.005);
+            gain2.gain.exponentialRampToValueAtTime(0.0001, t + duration * 0.55);
 
-          gain3.gain.setValueAtTime(0.0001, t);
-          gain3.gain.exponentialRampToValueAtTime(vol * 0.14, t + 0.004);
-          gain3.gain.exponentialRampToValueAtTime(0.0001, t + duration * 0.3);
+            gain3.gain.setValueAtTime(0.0001, t);
+            gain3.gain.exponentialRampToValueAtTime(vol * 0.14, t + 0.004);
+            gain3.gain.exponentialRampToValueAtTime(0.0001, t + duration * 0.3);
 
-          osc1.connect(gain1);
-          osc2.connect(gain2);
-          osc3.connect(gain3);
+            osc1.connect(gain1);
+            osc2.connect(gain2);
+            osc3.connect(gain3);
 
-          gain1.connect(masterGain);
-          gain2.connect(masterGain);
-          gain3.connect(masterGain);
+            gain1.connect(masterGain);
+            gain2.connect(masterGain);
+            gain3.connect(masterGain);
 
-          // Send gentle tail to echo
-          if (delayNode) {
-            gain1.connect(delayNode);
-          }
+            if (delayNode) {
+              gain1.connect(delayNode);
+            }
 
-          osc1.start(t);
-          osc2.start(t);
-          osc3.start(t);
-          osc1.stop(t + duration + 0.05);
-          osc2.stop(t + duration + 0.05);
-          osc3.stop(t + duration + 0.05);
-        } catch (err) { /* ignore safely */ }
+            osc1.start(t);
+            osc2.start(t);
+            osc3.start(t);
+            osc1.stop(t + duration + 0.05);
+            osc2.stop(t + duration + 0.05);
+            osc3.stop(t + duration + 0.05);
+          } catch (err) { /* ignore safely */ }
+        };
+
+        if (ctx.state === 'suspended') {
+          ctx.resume().then(scheduleNote).catch(() => {});
+        } else {
+          scheduleNote();
+        }
       }
 
-      // Soft realistic water droplet sound + Songkran pentatonic chime
       function playWaterTapSound() {
         if (!state.soundEnabled) return;
         const ctx = initAudio();
         if (ctx && masterGain) {
-          try {
-            const t = ctx.currentTime;
-            const dropOsc = ctx.createOscillator();
-            const dropGain = ctx.createGain();
-            dropOsc.type = 'sine';
-            dropOsc.frequency.setValueAtTime(420, t);
-            dropOsc.frequency.exponentialRampToValueAtTime(860, t + 0.065);
+          const scheduleDrop = () => {
+            try {
+              const t = ctx.currentTime;
+              const dropOsc = ctx.createOscillator();
+              const dropGain = ctx.createGain();
+              dropOsc.type = 'sine';
+              dropOsc.frequency.setValueAtTime(420, t);
+              dropOsc.frequency.exponentialRampToValueAtTime(860, t + 0.065);
 
-            dropGain.gain.setValueAtTime(0.0001, t);
-            dropGain.gain.exponentialRampToValueAtTime(0.065, t + 0.01);
-            dropGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+              dropGain.gain.setValueAtTime(0.0001, t);
+              dropGain.gain.exponentialRampToValueAtTime(0.08, t + 0.01);
+              dropGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
 
-            dropOsc.connect(dropGain);
-            dropGain.connect(masterGain);
-            dropOsc.start(t);
-            dropOsc.stop(t + 0.1);
-          } catch (err) { /* ignore */ }
+              dropOsc.connect(dropGain);
+              dropGain.connect(masterGain);
+              dropOsc.start(t);
+              dropOsc.stop(t + 0.1);
+            } catch (err) { /* ignore */ }
+          };
+
+          if (ctx.state === 'suspended') {
+            ctx.resume().then(scheduleDrop).catch(() => {});
+          } else {
+            scheduleDrop();
+          }
         }
 
         const note = SONGKRAN_MELODY[state.melodyIndex % SONGKRAN_MELODY.length];
         state.melodyIndex++;
-        playKhimNote(note, 0.015, 0.78, 0.085);
+        playKhimNote(note, 0.015, 0.78, 0.1);
       }
 
       function playStarTapSound() {
-        // Delicate sparkling ascending chime
         [783.99, 880.00, 1046.50, 1318.51].forEach((f, idx) => {
-          playKhimNote(f, idx * 0.055, 0.75, 0.075);
+          playKhimNote(f, idx * 0.055, 0.75, 0.09);
         });
       }
 
       function playLanternSound() {
-        playKhimNote(659.25, 0, 0.75, 0.08);
-        playKhimNote(880.00, 0.09, 0.85, 0.085);
+        playKhimNote(659.25, 0, 0.75, 0.095);
+        playKhimNote(880.00, 0.09, 0.85, 0.1);
       }
 
       function playCandleSound() {
         [523.25, 659.25, 783.99, 1046.50].forEach((f, idx) => {
-          playKhimNote(f, idx * 0.06, 0.9, 0.09);
+          playKhimNote(f, idx * 0.06, 0.9, 0.1);
         });
       }
 
       function playReleaseSound() {
-        // Graceful 5-note Thai Songkran-style khim phrase
         [523.25, 659.25, 783.99, 880.00, 1046.50].forEach((f, idx) => {
-          playKhimNote(f, idx * 0.085, 1.05, 0.1);
+          playKhimNote(f, idx * 0.085, 1.05, 0.11);
         });
       }
 
       function playEnvelopeSound() {
-        playKhimNote(659.25, 0, 0.8, 0.085);
-        playKhimNote(1046.50, 0.11, 1.0, 0.09);
+        playKhimNote(659.25, 0, 0.8, 0.1);
+        playKhimNote(1046.50, 0.11, 1.0, 0.11);
       }
 
       // ---------------- 3. Canvas & Offscreen Sprite Architecture ----------------
@@ -705,7 +717,6 @@
       let horizonY = 0;
       let moonPos = { x: 0, y: 0, r: 26 };
 
-      // Offscreen cached canvases
       const bgCanvas = document.createElement('canvas');
       const bgCtx = bgCanvas.getContext('2d');
 
@@ -723,17 +734,15 @@
         krathongs: {}
       };
 
-      // Dynamic scene collections
       const stars = [];
       const shootingStars = [];
       const lanterns = [];
       const fireflies = [];
-      const ripples = [];     // strictly capped <= MAX_RIPPLES
-      const particles = [];   // strictly capped <= MAX_PARTICLES
+      const ripples = [];
+      const particles = [];
       const floatingKrathongs = [];
-      let prathipLampsX = []; // horizon lamp positions for water reflection ticks
+      let prathipLampsX = [];
 
-      // Pre-render radial glow sprite
       function createGlowSprite(size, innerColor, midColor, outerColor) {
         const c = document.createElement('canvas');
         c.width = size;
@@ -749,7 +758,6 @@
         return c;
       }
 
-      // Pre-render Khom Loy (sky lantern) sprite
       function createLanternSprite() {
         const c = document.createElement('canvas');
         c.width = 96;
@@ -758,7 +766,6 @@
         const cx = 48;
         const cy = 48;
 
-        // Soft circular golden halo
         const halo = lctx.createRadialGradient(cx, cy, 4, cx, cy, 44);
         halo.addColorStop(0, 'rgba(255, 214, 120, 0.58)');
         halo.addColorStop(0.42, 'rgba(255, 165, 70, 0.22)');
@@ -766,7 +773,6 @@
         lctx.fillStyle = halo;
         lctx.fillRect(0, 0, 96, 96);
 
-        // Trapezoidal glowing paper body
         const bodyGrad = lctx.createLinearGradient(cx, cy - 15, cx, cy + 12);
         bodyGrad.addColorStop(0, '#e87834');
         bodyGrad.addColorStop(0.55, '#ffb155');
@@ -781,7 +787,6 @@
         lctx.fillStyle = bodyGrad;
         lctx.fill();
 
-        // Subtle rim & inner flame core
         lctx.beginPath();
         lctx.ellipse(cx, cy + 10.5, 6, 1.8, 0, 0, Math.PI * 2);
         lctx.fillStyle = '#fff9de';
@@ -790,7 +795,6 @@
         return c;
       }
 
-      // Pre-render Sparkle & Heart Sprites
       function createSparkleSprite(colorHex) {
         const c = document.createElement('canvas');
         c.width = 32;
@@ -807,7 +811,6 @@
         sctx.arc(0, 0, 14, 0, Math.PI * 2);
         sctx.fill();
 
-        // 4-point star glint
         sctx.fillStyle = '#ffffff';
         sctx.beginPath();
         for (let i = 0; i < 4; i++) {
@@ -839,7 +842,6 @@
         return c;
       }
 
-      // Pre-render Realistic Krathong Body (without flame, flame is drawn live for authentic flicker)
       function createKrathongSprite(type) {
         const c = document.createElement('canvas');
         c.width = 160;
@@ -848,7 +850,6 @@
         const cx = 80;
         const baseY = 98;
 
-        // Soft ambient shadow under krathong on water
         const shad = kctx.createRadialGradient(cx, baseY + 6, 8, cx, baseY + 6, 56);
         shad.addColorStop(0, 'rgba(4, 10, 18, 0.55)');
         shad.addColorStop(1, 'rgba(4, 10, 18, 0)');
@@ -857,7 +858,6 @@
         kctx.ellipse(cx, baseY + 6, 56, 15, 0, 0, Math.PI * 2);
         kctx.fill();
 
-        // Banana leaf base (layered realistic emerald green)
         const baseGrad = kctx.createLinearGradient(cx - 48, baseY - 8, cx + 48, baseY + 10);
         baseGrad.addColorStop(0, '#2e6f40');
         baseGrad.addColorStop(0.5, '#4da362');
@@ -870,7 +870,6 @@
         kctx.lineWidth = 1.5;
         kctx.stroke();
 
-        // Folded green leaf points around rim
         kctx.fillStyle = '#3f8c54';
         for (let i = -3; i <= 3; i++) {
           const px = cx + i * 12;
@@ -882,7 +881,6 @@
           kctx.fill();
         }
 
-        // Helper for realistic lotus / flower petals
         function drawPetal(px, py, w, h, angle, cTop, cBot, strokeCol) {
           kctx.save();
           kctx.translate(px, py);
@@ -904,15 +902,11 @@
           kctx.restore();
         }
 
-        // Draw style-specific petals
         if (type === 'pink_lotus') {
-          // Back outer petals
           [-0.95, -0.58, -0.25, 0.25, 0.58, 0.95].forEach((a) => {
             drawPetal(cx + a * 26, baseY - 2, 11, 34, a * 0.45, '#fff0f6', '#f472b6', '#db2777');
           });
-          // Incense & candle behind front petals
           drawCenterCandleAndIncense(kctx, cx, baseY - 10);
-          // Front inner petals
           [-0.65, -0.3, 0, 0.3, 0.65].forEach((a) => {
             drawPetal(cx + a * 24, baseY + 4, 10, 26, a * 0.35, '#ffffff', '#fbcfe8', '#f472b6');
           });
@@ -925,7 +919,6 @@
             drawPetal(cx + a * 24, baseY + 4, 10, 26, a * 0.35, '#fffef9', '#f1ebd8', '#d6cfc0');
           });
         } else if (type === 'marigold') {
-          // Festive golden marigold ring + white jasmine crown
           for (let i = -3; i <= 3; i++) {
             const mx = cx + i * 11;
             const my = baseY - 5 + Math.abs(i) * 1.2;
@@ -939,7 +932,6 @@
             kctx.fill();
           }
           drawCenterCandleAndIncense(kctx, cx, baseY - 10);
-          // Front marigold & jasmine pearls
           for (let i = -2; i <= 2; i++) {
             const mx = cx + i * 11;
             const my = baseY + 3;
@@ -949,7 +941,6 @@
             kctx.fill();
           }
         } else {
-          // 'sweet_rose' romantic pastel rose petals
           [-0.9, -0.52, -0.2, 0.2, 0.52, 0.9].forEach((a) => {
             drawPetal(cx + a * 25, baseY - 2, 12, 31, a * 0.48, '#ffe4ec', '#fb7185', '#e11d48');
           });
@@ -963,7 +954,6 @@
       }
 
       function drawCenterCandleAndIncense(kctx, cx, topY) {
-        // Incense sticks
         kctx.strokeStyle = '#e5be75';
         kctx.lineWidth = 1.8;
         kctx.lineCap = 'round';
@@ -973,14 +963,12 @@
           kctx.lineTo(cx + dx, topY + dy);
           kctx.stroke();
 
-          // Glowing incense ember
           kctx.fillStyle = '#ff6b4a';
           kctx.beginPath();
           kctx.arc(cx + dx, topY + dy, 1.8, 0, Math.PI * 2);
           kctx.fill();
         });
 
-        // Beeswax candle body
         const cg = kctx.createLinearGradient(cx - 4, topY - 26, cx + 4, topY + 4);
         cg.addColorStop(0, '#fff7cc');
         cg.addColorStop(1, '#eab308');
@@ -1012,7 +1000,6 @@
 
         horizonY = Math.round(viewH * 0.62);
 
-        // Twilight Sky Gradient (#111328 -> #392745 -> #7d4a3a)
         const skyGrad = bgCtx.createLinearGradient(0, 0, 0, horizonY);
         skyGrad.addColorStop(0, '#111328');
         skyGrad.addColorStop(0.42, '#281e3a');
@@ -1022,13 +1009,12 @@
         bgCtx.fillStyle = skyGrad;
         bgCtx.fillRect(0, 0, viewW, horizonY + 2);
 
-        // 2) Full Moon (Top-Left) with atmospheric halo & soft lunar shading
+        // Full Moon (positioned cleanly below header on mobile)
         const moonX = viewW * 0.18;
-        const moonY = horizonY * 0.24;
+        const moonY = viewW < 640 ? Math.max(horizonY * 0.32, 165) : horizonY * 0.24;
         const moonR = Math.max(20, Math.min(viewW * 0.068, 36));
         moonPos = { x: moonX, y: moonY, r: moonR };
 
-        // Wide warm atmospheric halo
         const mHalo = bgCtx.createRadialGradient(moonX, moonY, moonR * 0.8, moonX, moonY, moonR * 5.2);
         mHalo.addColorStop(0, 'rgba(255, 245, 209, 0.35)');
         mHalo.addColorStop(0.35, 'rgba(255, 224, 155, 0.12)');
@@ -1038,7 +1024,6 @@
         bgCtx.arc(moonX, moonY, moonR * 5.2, 0, Math.PI * 2);
         bgCtx.fill();
 
-        // Moon disc
         const moonGrad = bgCtx.createRadialGradient(
           moonX - moonR * 0.25, moonY - moonR * 0.25, moonR * 0.1,
           moonX, moonY, moonR
@@ -1051,7 +1036,6 @@
         bgCtx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
         bgCtx.fill();
 
-        // Subtle lunar craters / shading
         bgCtx.save();
         bgCtx.beginPath();
         bgCtx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
@@ -1064,7 +1048,6 @@
         bgCtx.fill();
         bgCtx.restore();
 
-        // 3) Deep Prussian-Indigo River Base (#18374b -> #0b1c29)
         const riverGrad = bgCtx.createLinearGradient(0, horizonY, 0, viewH);
         riverGrad.addColorStop(0, '#18374b');
         riverGrad.addColorStop(0.45, '#102738');
@@ -1072,23 +1055,18 @@
         bgCtx.fillStyle = riverGrad;
         bgCtx.fillRect(0, horizonY, viewW, viewH - horizonY);
 
-        // Subtle warm horizon glow bounced onto top edge of water
         const waterHorizonGlow = bgCtx.createLinearGradient(0, horizonY, 0, horizonY + (viewH - horizonY) * 0.28);
         waterHorizonGlow.addColorStop(0, 'rgba(180, 108, 72, 0.28)');
         waterHorizonGlow.addColorStop(1, 'rgba(24, 55, 75, 0)');
         bgCtx.fillStyle = waterHorizonGlow;
         bgCtx.fillRect(0, horizonY, viewW, (viewH - horizonY) * 0.28);
 
-        //Temple (Ubosot), Golden Chedi, Trees & Riverside Walkway (Drawn cleanly onto both bgCanvas and reflCanvas)
-        const archW = viewW;
         const archH = Math.min(horizonY * 0.72, 260);
 
-        // Helper to draw architecture at baseline y = targetY
         function drawTempleArchitecture(tCtx, baseY) {
           const scale = Math.min(Math.max(viewW / 440, 0.88), 1.75);
           const centerX = viewW * 0.5;
 
-          // Edge silhouetted trees/bushes
           tCtx.fillStyle = '#090a12';
           tCtx.beginPath();
           tCtx.arc(viewW * 0.02, baseY - 6 * scale, 34 * scale, 0, Math.PI * 2);
@@ -1097,7 +1075,6 @@
           tCtx.arc(viewW * 0.91, baseY - 2 * scale, 21 * scale, 0, Math.PI * 2);
           tCtx.fill();
 
-          // Flanking lush bushes around temple & chedi
           tCtx.fillStyle = '#0c0d16';
           tCtx.beginPath();
           tCtx.arc(centerX - 88 * scale, baseY - 4 * scale, 22 * scale, 0, Math.PI * 2);
@@ -1106,16 +1083,13 @@
           tCtx.arc(centerX + 96 * scale, baseY - 2 * scale, 17 * scale, 0, Math.PI * 2);
           tCtx.fill();
 
-          // ---- Center-Left Thai Ubosot ----
           const uX = centerX - 36 * scale;
           const uW = 92 * scale;
           const uH = 38 * scale;
 
-          // Base plinth
           tCtx.fillStyle = '#2d1914';
           tCtx.fillRect(uX - uW * 0.56, baseY - 10 * scale, uW * 1.12, 10 * scale);
 
-          // Cream wall with warm shading
           const wallGrad = tCtx.createLinearGradient(uX - uW * 0.5, 0, uX + uW * 0.5, 0);
           wallGrad.addColorStop(0, '#bd9068');
           wallGrad.addColorStop(0.4, '#ecd2ac');
@@ -1124,7 +1098,6 @@
           tCtx.fillStyle = wallGrad;
           tCtx.fillRect(uX - uW * 0.5, baseY - 10 * scale - uH, uW, uH);
 
-          // 5 Glowing Amber Windows
           const winCount = 5;
           const winW = 7.5 * scale;
           const winH = 20 * scale;
@@ -1132,14 +1105,12 @@
           for (let i = 0; i < winCount; i++) {
             const wx = uX - uW * 0.38 + i * (uW * 0.19) - winW / 2;
 
-            // Soft window ambient light
             const wg = tCtx.createRadialGradient(wx + winW / 2, winTop + winH / 2, 2, wx + winW / 2, winTop + winH / 2, 18 * scale);
             wg.addColorStop(0, 'rgba(255, 224, 130, 0.35)');
             wg.addColorStop(1, 'rgba(255, 200, 100, 0)');
             tCtx.fillStyle = wg;
             tCtx.fillRect(wx - 12 * scale, winTop - 8 * scale, winW + 24 * scale, winH + 16 * scale);
 
-            // Arched/rectangular glowing window pane
             const wPaneGrad = tCtx.createLinearGradient(0, winTop, 0, winTop + winH);
             wPaneGrad.addColorStop(0, '#fff9df');
             wPaneGrad.addColorStop(1, '#ffd06b');
@@ -1149,13 +1120,11 @@
             tCtx.fill();
           }
 
-          // Curved Two-Tiered Roofs (Dark Terracotta-Maroon + Gold Trim #e6b86a)
           const roofBaseY = baseY - 10 * scale - uH;
           const roofGrad = tCtx.createLinearGradient(0, roofBaseY - 48 * scale, 0, roofBaseY + 6 * scale);
           roofGrad.addColorStop(0, '#8a3023');
           roofGrad.addColorStop(1, '#4b1610');
 
-          // Lower tier roof
           tCtx.fillStyle = roofGrad;
           tCtx.strokeStyle = '#e6b86a';
           tCtx.lineWidth = 1.4 * scale;
@@ -1168,7 +1137,6 @@
           tCtx.fill();
           tCtx.stroke();
 
-          // Upper tier roof
           tCtx.beginPath();
           tCtx.moveTo(uX - uW * 0.48, roofBaseY - 16 * scale);
           tCtx.quadraticCurveTo(uX - uW * 0.2, roofBaseY - 22 * scale, uX, roofBaseY - 48 * scale);
@@ -1178,7 +1146,6 @@
           tCtx.fill();
           tCtx.stroke();
 
-          // Golden Chofah spire
           tCtx.fillStyle = '#f2c977';
           tCtx.beginPath();
           tCtx.moveTo(uX - 1.5 * scale, roofBaseY - 47 * scale);
@@ -1187,19 +1154,16 @@
           tCtx.closePath();
           tCtx.fill();
 
-          // ---- Center-Right Tall Golden Chedi ----
           const cX = centerX + 58 * scale;
           const chediGrad = tCtx.createLinearGradient(cX - 32 * scale, baseY - 140 * scale, cX + 32 * scale, baseY);
           chediGrad.addColorStop(0, '#f5d484');
           chediGrad.addColorStop(0.45, '#c99a49');
           chediGrad.addColorStop(1, '#6e4e26');
 
-          // Stepped pedestal
           tCtx.fillStyle = chediGrad;
           tCtx.fillRect(cX - 30 * scale, baseY - 11 * scale, 60 * scale, 11 * scale);
           tCtx.fillRect(cX - 22 * scale, baseY - 22 * scale, 44 * scale, 11 * scale);
 
-          // Bell-shaped body & tall tapering spire
           tCtx.beginPath();
           tCtx.moveTo(cX - 18 * scale, baseY - 22 * scale);
           tCtx.bezierCurveTo(
@@ -1219,7 +1183,6 @@
           tCtx.closePath();
           tCtx.fill();
 
-          // Warm golden rim light on left side of chedi
           tCtx.strokeStyle = 'rgba(255, 238, 175, 0.55)';
           tCtx.lineWidth = 1.1 * scale;
           tCtx.beginPath();
@@ -1232,7 +1195,6 @@
           tCtx.lineTo(cX - 0.8 * scale, baseY - 138 * scale);
           tCtx.stroke();
 
-          // Fine horizontal spire rings (ปล้องไฉน)
           tCtx.strokeStyle = 'rgba(110, 78, 38, 0.55)';
           tCtx.lineWidth = 0.9 * scale;
           for (let r = 0; r < 8; r++) {
@@ -1245,14 +1207,11 @@
           }
         }
 
-        // Draw Temple onto main background canvas
         drawTempleArchitecture(bgCtx, horizonY);
 
-        // Dark waterfront walkway bank
         bgCtx.fillStyle = '#080910';
         bgCtx.fillRect(0, horizonY - 3, viewW, 5);
 
-        // Pre-render flipped reflection canvas for dynamic water scanlines
         reflCanvas.width = Math.max(1, Math.floor(viewW * dpr));
         reflCanvas.height = Math.max(1, Math.floor(archH * dpr));
         reflCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1263,16 +1222,11 @@
         drawTempleArchitecture(reflCtx, 0);
         reflCtx.restore();
 
-        // Evenly Spaced Prathip Oil Lamps along the entire horizon
         prathipLampsX = [];
         const lampStep = Math.max(28, Math.min(viewW / 14, 44));
         for (let lx = lampStep * 0.5; lx < viewW - 8; lx += lampStep) {
           prathipLampsX.push(lx);
-
-          // Soft circular radial glow
           bgCtx.drawImage(sprites.glowGold, lx - 16, horizonY - 19, 32, 32);
-
-          // Bright golden core flame
           bgCtx.fillStyle = '#fff9d6';
           bgCtx.beginPath();
           bgCtx.arc(lx, horizonY - 3.5, 2.1, 0, Math.PI * 2);
@@ -1280,7 +1234,7 @@
         }
       }
 
-      // Populate Stars, Lanterns, Fireflies & Initial Krathongs ----------------
+      // ---------------- 5. Populate Stars, Lanterns, Fireflies & Initial Krathongs ----------------
       function initAmbientEntities() {
         stars.length = 0;
         for (let i = 0; i < 95; i++) {
@@ -1319,14 +1273,13 @@
         }
 
         if (floatingKrathongs.length === 0) {
-          // Start with 3 serene krathongs drifting gently on the water
           spawnFloatingKrathong('pink_lotus', 'ขอให้คืนนี้มีแต่ความสงบสุขและรอยยิ้ม 🌕', viewW * 0.28, horizonY + (viewH - horizonY) * 0.52, true);
           spawnFloatingKrathong('white_lotus', 'ลอยความกังวลไปกับสายน้ำนะ 🪷', viewW * 0.68, horizonY + (viewH - horizonY) * 0.38, true);
           spawnFloatingKrathong('sweet_rose', 'ขอให้สมหวังในทุกเรื่องที่ตั้งใจ ✨', viewW * 0.79, horizonY + (viewH - horizonY) * 0.66, true);
         }
       }
 
-      //Dynamic Interactive Spawners (With Strict Caps) ----------------
+      // ---------------- 6. Dynamic Interactive Spawners ----------------
       function spawnShootingStar(x, y) {
         shootingStars.push({
           x: x,
@@ -1395,13 +1348,12 @@
           wish: wishText,
           x: startX,
           y: startY,
-          // Newly released krathong enters gently from bottom-center and drifts smoothly outward
           vx: isAmbient ? (Math.random() * 7 + 5) : (Math.random() * 10 + 7),
           vy: isAmbient ? 0 : -(Math.random() * 7 + 9),
           targetDepthY: isAmbient ? startY : (horizonY + riverH * (0.28 + Math.random() * 0.25)),
           bobPhase: Math.random() * Math.PI * 2,
           scaleBase: 0.48 + normDepth * 0.42,
-          wishTimer: isAmbient ? 0 : 4.5, // glow wish text for 4.5s on release
+          wishTimer: isAmbient ? 0 : 4.5,
           highlightTimer: isAmbient ? 0 : 1.5,
           rippleClock: 0
         };
@@ -1411,7 +1363,16 @@
         }
       }
 
-      // Main 60fps Render & Animation Loop 
+      function fitTextToWidth(cCtx, text, maxWidth) {
+        if (cCtx.measureText(text).width <= maxWidth) return text;
+        let clipped = text;
+        while (clipped.length > 1 && cCtx.measureText(clipped + '…').width > maxWidth) {
+          clipped = clipped.slice(0, -1);
+        }
+        return clipped + '…';
+      }
+
+      // ---------------- 7. Main 60fps Render & Animation Loop ----------------
       let lastTime = performance.now();
 
       function renderFrame(now) {
@@ -1419,10 +1380,8 @@
         lastTime = now;
         const timeSec = now * 0.001;
 
-        // Blit Pre-rendered Background Canvas (Ultra-fast single drawImage)
         ctx.drawImage(bgCanvas, 0, 0, viewW, viewH);
 
-        // Draw Twinkling Stars
         for (let i = 0; i < stars.length; i++) {
           const s = stars[i];
           const tw = 0.5 + 0.5 * Math.sin(timeSec * s.speed + s.phase);
@@ -1434,7 +1393,6 @@
         }
         ctx.globalAlpha = 1;
 
-        // Draw Shooting Stars (from tapping stars)
         for (let i = shootingStars.length - 1; i >= 0; i--) {
           const st = shootingStars[i];
           st.x += st.vx * dt;
@@ -1463,11 +1421,9 @@
           ctx.lineTo(st.x - dx, st.y - dy);
           ctx.stroke();
 
-          // Bright head star
           ctx.drawImage(sprites.sparkleGold, st.x - 10, st.y - 10, 20, 20);
         }
 
-        // Draw Rising Khom Loy (Sky Lanterns)
         for (let i = lanterns.length - 1; i >= 0; i--) {
           const lt = lanterns[i];
           lt.y += lt.vy * dt;
@@ -1478,7 +1434,6 @@
             lt.x = Math.random() * viewW * 0.88 + viewW * 0.06;
           }
 
-          // Fade smoothly near top or horizon
           let fade = lt.alpha;
           if (lt.y > horizonY - 35) fade *= Math.max(0, (horizonY - lt.y) / 35);
           if (lt.y < 40) fade *= Math.max(0, lt.y / 40);
@@ -1489,7 +1444,6 @@
         }
         ctx.globalAlpha = 1;
 
-        // Draw Shimmering Scanline Water Reflections (Temple, Chedi, Bushes)
         const reflH = reflCanvas.height / dpr;
         const stripH = 4;
         const riverH = viewH - horizonY;
@@ -1509,7 +1463,6 @@
         }
         ctx.globalAlpha = 1;
 
-        //  Moon Reflection Path 
         const moonLines = 28;
         for (let i = 0; i < moonLines; i++) {
           const p = i / (moonLines - 1);
@@ -1526,7 +1479,6 @@
           ctx.stroke();
         }
 
-        // Prathip Lamp Reflections (Crisp double-tick golden reflections along horizon)
         for (let i = 0; i < prathipLampsX.length; i++) {
           const lx = prathipLampsX[i];
           const flicker = 0.75 + 0.25 * Math.sin(timeSec * 3.5 + i * 1.3);
@@ -1538,7 +1490,6 @@
           ctx.fillRect(lx - 1.5, horizonY + 17, 3, 1.2);
         }
 
-        //Perspective-flattened Expanding Water Ripples (Capped <= 12)
         for (let i = ripples.length - 1; i >= 0; i--) {
           const rp = ripples[i];
           rp.r += dt * 36;
@@ -1564,7 +1515,6 @@
           }
         }
 
-        // Update & Draw Floating Krathongs 
         floatingKrathongs.sort((a, b) => a.y - b.y);
 
         for (let i = 0; i < floatingKrathongs.length; i++) {
@@ -1588,7 +1538,6 @@
           if (k.wishTimer > 0) k.wishTimer = Math.max(0, k.wishTimer - dt);
           if (k.highlightTimer > 0) k.highlightTimer = Math.max(0, k.highlightTimer - dt);
 
-          // Perspective scale shrinks gently as krathong moves deeper toward horizon
           const depthRatio = Math.min(Math.max((k.y - horizonY) / riverH, 0.08), 1);
           const scale = 0.44 + depthRatio * 0.48;
           const bobY = Math.sin(timeSec * 2.2 + k.bobPhase) * 2.4;
@@ -1596,19 +1545,16 @@
           const drawX = k.x;
           const drawY = k.y + bobY;
 
-          // Warm candle light glow on water surface
           const glowSz = 110 * scale;
           ctx.globalAlpha = k.highlightTimer > 0 ? 0.95 : 0.72;
           ctx.drawImage(sprites.glowGold, drawX - glowSz / 2, drawY - glowSz * 0.45, glowSz, glowSz * 0.7);
           ctx.globalAlpha = 1;
 
-          // Draw pre-rendered realistic krathong body
           const kSprite = sprites.krathongs[k.type] || sprites.krathongs.pink_lotus;
           const kw = 104 * scale;
           const kh = 84 * scale;
           ctx.drawImage(kSprite, drawX - kw / 2, drawY - kh * 0.65, kw, kh);
 
-          // Draw dynamic flickering candle flame on top
           const flameX = drawX;
           const flameY = drawY - kh * 0.45;
           const flickerScale = 0.88 + 0.22 * Math.sin(timeSec * 14 + k.bobPhase);
@@ -1617,19 +1563,16 @@
           ctx.save();
           ctx.translate(flameX, flameY);
           ctx.scale(scale * flickerScale, scale * flickerScale);
-          // Flame outer halo
           ctx.fillStyle = 'rgba(255, 200, 75, 0.38)';
           ctx.beginPath();
           ctx.arc(sway * 0.5, -5, 10, 0, Math.PI * 2);
           ctx.fill();
-          // Outer orange flame
           ctx.fillStyle = '#ff9f1c';
           ctx.beginPath();
           ctx.moveTo(0, 0);
           ctx.quadraticCurveTo(-4.5, -5, sway, -13);
           ctx.quadraticCurveTo(4.5, -5, 0, 0);
           ctx.fill();
-          // Inner bright white-gold core
           ctx.fillStyle = '#fff9d6';
           ctx.beginPath();
           ctx.moveTo(0, -1);
@@ -1638,33 +1581,36 @@
           ctx.fill();
           ctx.restore();
 
-          // Float wish text above krathong when recently released or tapped
+          // Float wish text strictly clamped & trimmed cleanly inside mobile viewport
           if (k.wishTimer > 0) {
             const wAlpha = k.wishTimer < 0.8 ? k.wishTimer / 0.8 : 1;
             ctx.save();
             ctx.globalAlpha = wAlpha;
-            ctx.font = `600 ${Math.round(12 * Math.max(0.85, scale))}px 'Prompt', 'Noto Sans Thai', sans-serif`;
-            const textWidth = Math.min(ctx.measureText(k.wish).width + 20, viewW * 0.72);
-            const pillX = Math.min(Math.max(drawX, textWidth / 2 + 12), viewW - textWidth / 2 - 12);
-            const pillY = drawY - kh * 0.82 - 14;
+            const fontSize = Math.round(12 * Math.max(0.88, scale));
+            ctx.font = `500 ${fontSize}px 'Prompt', 'Noto Sans Thai', sans-serif`;
 
-            ctx.fillStyle = 'rgba(13, 24, 38, 0.82)';
-            ctx.strokeStyle = 'rgba(246, 211, 127, 0.65)';
+            const maxPillW = Math.max(120, Math.min(viewW - 24, viewW * 0.72));
+            const displayWish = fitTextToWidth(ctx, k.wish, maxPillW - 24);
+            const pillW = Math.min(ctx.measureText(displayWish).width + 24, maxPillW);
+            const pillX = Math.max(pillW / 2 + 12, Math.min(drawX, viewW - pillW / 2 - 12));
+            const pillY = Math.max(horizonY + 18, drawY - kh * 0.82 - 14);
+
+            ctx.fillStyle = 'rgba(13, 24, 38, 0.86)';
+            ctx.strokeStyle = 'rgba(246, 211, 127, 0.7)';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.roundRect(pillX - textWidth / 2, pillY - 12, textWidth, 24, 12);
+            ctx.roundRect(pillX - pillW / 2, pillY - 13, pillW, 26, 13);
             ctx.fill();
             ctx.stroke();
 
             ctx.fillStyle = '#fde68a';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(k.wish, pillX, pillY, textWidth - 14);
+            ctx.fillText(displayWish, pillX, pillY + 0.5);
             ctx.restore();
           }
         }
 
-        // Golden Fireflies drifting gently near bushes & river edge
         for (let i = 0; i < fireflies.length; i++) {
           const ff = fireflies[i];
           ff.x += ff.vx * dt;
@@ -1683,7 +1629,6 @@
         }
         ctx.globalAlpha = 1;
 
-        // Tap Sparkles & Hearts (Capped <= 24)
         for (let i = particles.length - 1; i >= 0; i--) {
           const pt = particles[i];
           pt.x += pt.vx * dt;
@@ -1708,17 +1653,15 @@
         requestAnimationFrame(renderFrame);
       }
 
-      //  Canvas Touch  ----------------
+      // ---------------- 8. Canvas Touch / Click Handling ----------------
       function handleCanvasTap(clientX, clientY) {
         const rect = canvas.getBoundingClientRect();
         const x = clientX - rect.left;
         const y = clientY - rect.top;
 
-        // Dismiss top hint smoothly after first interaction
         const hintEl = document.getElementById('sky-hint-pill');
         if (hintEl) hintEl.classList.add('opacity-0');
 
-        //  Check if tapped near any floating krathong first
         for (let i = floatingKrathongs.length - 1; i >= 0; i--) {
           const k = floatingKrathongs[i];
           if (Math.hypot(x - k.x, y - (k.y - 10)) < 44) {
@@ -1731,7 +1674,6 @@
           }
         }
 
-        //Tapped on the River  Zero-lag ripple + particles + water-drop khim note
         if (y >= horizonY) {
           spawnRipple(x, y, 60);
           spawnTapParticles(x, y, 3, true);
@@ -1739,7 +1681,6 @@
           return;
         }
 
-        // Tapped on the Sky  Check if near a star (or upper sky) for Shooting Star
         let hitStar = false;
         for (let i = 0; i < stars.length; i++) {
           if (Math.hypot(x - stars[i].x, y - stars[i].y) < 30) {
@@ -1753,14 +1694,13 @@
           spawnTapParticles(x, y, 4, false);
           playStarTapSound();
         } else {
-          // Open twilight sky release a new glowing Khom Loy
           spawnLanternAt(x, y);
           spawnTapParticles(x, y, 3, false);
           playLanternSound();
         }
       }
 
-      //  2x2 SVG Krathong Picker & 3-Step Ritual 
+      // ---------------- 9. 2x2 SVG Krathong Picker & 3-Step Ritual ----------------
       function getDetailedKrathongSVG(type, isLit) {
         const flameSVG = isLit
           ? `
@@ -1845,7 +1785,6 @@
           `;
         }
 
-        // 'sweet_rose'
         return `
           <svg viewBox="0 0 120 100" class="w-full h-full overflow-visible">
             ${leafBase}
@@ -1890,7 +1829,7 @@
 
           card.addEventListener('click', () => {
             state.selectedKrathong = item.id;
-            playKhimNote(783.99, 0, 0.55, 0.075);
+            playKhimNote(783.99, 0, 0.55, 0.09);
             renderKrathong2x2();
           });
           grid2x2.appendChild(card);
@@ -1904,9 +1843,9 @@
         document.getElementById('step-3-panel').classList.toggle('hidden', stepNum !== 3);
 
         const titles = {
-          1: '1/3 เลือกกระทงคู่ใจ ',
-          2: '2/3 เขียนคำอธิษฐาน ',
-          3: '3/3 จุดเทียน & ลอยกระทง '
+          1: '1/3 เลือกกระทงคู่ใจ',
+          2: '2/3 เขียนคำอธิษฐาน',
+          3: '3/3 จุดเทียน & ลอยกระทง'
         };
         document.getElementById('step-title-badge').textContent = titles[stepNum];
 
@@ -1953,13 +1892,16 @@
         }
       }
 
-      //  Bug-Free Envelope Modal & URL Personalization 
+      // ---------------- 10. iOS-Safe Envelope Modal & URL Personalization ----------------
       const letterModal = document.getElementById('letter-modal');
       const envelopeContainer = document.getElementById('envelope-container');
+      const envelopeTrigger = document.getElementById('envelope-sealed-trigger');
+      const parchmentCard = document.getElementById('parchment-letter-card');
       const customizeModal = document.getElementById('customize-modal');
       const toastBox = document.getElementById('toast-box');
       const toastText = document.getElementById('toast-text');
       let toastTimer = null;
+      let envelopeOpenTimer = null;
 
       function showToast(msg) {
         toastText.textContent = msg;
@@ -1974,7 +1916,7 @@
 
       function loadPersonalization() {
         try {
-          const saved = localStorage.getItem('loy_krathong_final_letter');
+          const saved = localStorage.getItem(STORAGE_KEY);
           if (saved) state.letter = { ...DEFAULT_LETTER, ...JSON.parse(saved) };
         } catch (err) { /* ignore */ }
 
@@ -2000,17 +1942,22 @@
       }
 
       function openLetterModal() {
-        // Always reset envelope cleanly to sealed state when opened
-        envelopeContainer.classList.remove('is-open');
+        clearTimeout(envelopeOpenTimer);
+        envelopeContainer.classList.remove('is-opening');
+        envelopeTrigger.classList.remove('hidden');
+        parchmentCard.classList.add('hidden');
         letterModal.classList.remove('hidden');
         const dot = document.getElementById('letter-notify-dot');
         if (dot) dot.classList.add('hidden');
-        playKhimNote(659.25, 0, 0.7, 0.075);
+        playKhimNote(659.25, 0, 0.7, 0.09);
       }
 
       function closeLetterModal() {
+        clearTimeout(envelopeOpenTimer);
         letterModal.classList.add('hidden');
-        envelopeContainer.classList.remove('is-open');
+        envelopeContainer.classList.remove('is-opening');
+        envelopeTrigger.classList.remove('hidden');
+        parchmentCard.classList.add('hidden');
       }
 
       function saveAndCopyLink() {
@@ -2022,7 +1969,7 @@
         syncLetterToDOM();
 
         try {
-          localStorage.setItem('loy_krathong_final_letter', JSON.stringify(state.letter));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state.letter));
         } catch (err) { /* ignore */ }
 
         const baseUrl = window.location.href.split('?')[0];
@@ -2031,9 +1978,8 @@
 
         try {
           window.history.replaceState({}, '', `?${params.toString()}`);
-        } catch (err) { /* ignore inside restricted iframes */ }
+        } catch (err) { /* ignore */ }
 
-        // Reliable clipboard copy with textarea fallback
         try {
           const ta = document.createElement('textarea');
           ta.value = fullUrl;
@@ -2054,59 +2000,60 @@
         showToast('คัดลอกลิงก์สำเร็จ! ส่งให้คนพิเศษได้เลย 💌');
       }
 
-      //  Event Bindings 
+      // ---------------- 11. Event Bindings ----------------
       function bindUIEvents() {
-        // Canvas interaction (using pointerdown for crisp zero-delay touch & click)
-        canvas.addEventListener('pointerdown', (e) => {
+        // Global iOS Web Audio unlock on trusted user gestures
+        document.addEventListener('touchend', unlockAudio, { passive: true });
+        document.addEventListener('click', unlockAudio, { passive: true });
+
+        // Canvas click fires reliably with zero delay (touch-action: manipulation) & unlocks iOS audio
+        canvas.addEventListener('click', (e) => {
+          unlockAudio();
           handleCanvasTap(e.clientX, e.clientY);
         });
 
-        // Sheet Collapse / Expand
         document.getElementById('collapse-sheet-btn').addEventListener('click', () => {
-          playKhimNote(523.25, 0, 0.45, 0.06);
+          playKhimNote(523.25, 0, 0.45, 0.08);
           setSheetCollapsed(true);
         });
         document.getElementById('expand-sheet-btn').addEventListener('click', () => {
-          playKhimNote(659.25, 0, 0.5, 0.065);
+          playKhimNote(659.25, 0, 0.5, 0.085);
           setSheetCollapsed(false);
         });
 
-        // Step Navigation
         document.getElementById('to-step-2-btn').addEventListener('click', () => {
-          playKhimNote(659.25, 0, 0.6, 0.075);
+          playKhimNote(659.25, 0, 0.6, 0.09);
           goToStep(2);
         });
 
         document.getElementById('back-step-1-btn').addEventListener('click', () => {
-          playKhimNote(523.25, 0, 0.5, 0.06);
+          playKhimNote(523.25, 0, 0.5, 0.08);
           goToStep(1);
         });
 
         document.getElementById('to-step-3-btn').addEventListener('click', () => {
           state.wish = wishInput.value.trim() || 'ขอให้คนที่เปิดอ่านมีรอยยิ้มทุกวัน ✨';
           state.candleLit = false;
-          playKhimNote(783.99, 0, 0.65, 0.075);
+          playKhimNote(783.99, 0, 0.65, 0.09);
           goToStep(3);
         });
 
         document.getElementById('back-step-2-btn').addEventListener('click', () => {
-          playKhimNote(587.33, 0, 0.5, 0.06);
+          playKhimNote(587.33, 0, 0.5, 0.08);
           goToStep(2);
         });
 
-        // Preset Wish Chips
         document.querySelectorAll('.wish-chip').forEach((chip) => {
           chip.addEventListener('click', () => {
             wishInput.value = chip.textContent.trim();
             state.wish = wishInput.value;
-            playKhimNote(880, 0, 0.5, 0.065);
+            playKhimNote(880, 0, 0.5, 0.085);
           });
         });
         wishInput.addEventListener('input', () => {
           state.wish = wishInput.value;
         });
 
-        // Candle Lighting & Release
         function igniteCandle() {
           if (!state.candleLit) {
             state.candleLit = true;
@@ -2135,38 +2082,38 @@
           setSheetCollapsed(true);
         });
 
-        // Sound Toggle
         document.getElementById('sound-toggle-btn').addEventListener('click', () => {
           state.soundEnabled = !state.soundEnabled;
           document.getElementById('sound-icon').textContent = state.soundEnabled ? '🔊' : '🔇';
           if (state.soundEnabled) {
-            playKhimNote(783.99, 0, 0.65, 0.08);
+            unlockAudio();
+            playKhimNote(783.99, 0, 0.65, 0.1);
             showToast('เปิดเสียงขิมและสายน้ำแล้ว 🔊');
           } else {
             showToast('ปิดเสียงเรียบร้อย 🔇');
           }
         });
 
-        // Bug-Free Envelope Modal Events
         document.getElementById('open-letter-btn').addEventListener('click', openLetterModal);
         document.getElementById('close-letter-modal-btn').addEventListener('click', closeLetterModal);
         document.getElementById('keep-in-heart-btn').addEventListener('click', () => {
-          playKhimNote(880, 0, 0.7, 0.08);
+          playKhimNote(880, 0, 0.7, 0.095);
           closeLetterModal();
         });
         letterModal.addEventListener('click', (e) => {
           if (e.target === letterModal) closeLetterModal();
         });
 
-        const envelopeTrigger = document.getElementById('envelope-sealed-trigger');
         envelopeTrigger.addEventListener('click', () => {
-          if (!envelopeContainer.classList.contains('is-open')) {
-            envelopeContainer.classList.add('is-open');
-            playEnvelopeSound();
-          }
+          if (envelopeContainer.classList.contains('is-opening')) return;
+          envelopeContainer.classList.add('is-opening');
+          playEnvelopeSound();
+          envelopeOpenTimer = setTimeout(() => {
+            envelopeTrigger.classList.add('hidden');
+            parchmentCard.classList.remove('hidden');
+          }, 260);
         });
 
-        // Customize & Share Modal Events
         document.getElementById('open-customize-btn').addEventListener('click', () => {
           syncLetterToDOM();
           customizeModal.classList.remove('hidden');
@@ -2180,7 +2127,7 @@
         document.getElementById('save-and-copy-btn').addEventListener('click', saveAndCopyLink);
       }
 
-      // Resize & Initialization 
+      // ---------------- 12. Resize & Initialization ----------------
       function handleResize() {
         viewW = window.innerWidth;
         viewH = window.innerHeight;
@@ -2201,6 +2148,12 @@
         renderKrathong2x2();
         goToStep(1);
         bindUIEvents();
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            buildBackgroundScene();
+          });
+        }
 
         window.addEventListener('resize', handleResize);
         lastTime = performance.now();
